@@ -176,7 +176,6 @@ async function generateAllPdfs() {
     const doc = await PDFDocument.create();
     const fontBold = await doc.embedFont(StandardFonts.HelveticaBold);
     const fontRegular = await doc.embedFont(StandardFonts.Helvetica);
-    const fontOblique = await doc.embedFont(StandardFonts.HelveticaOblique);
 
     // Color definitions
     const navy = rgb(0.09, 0.204, 0.373); // #17345F

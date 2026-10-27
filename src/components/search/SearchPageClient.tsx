@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageBanner } from "@/components/ui/PageBanner";
-import { searchSite, SEARCH_INDEX, SearchResultItem } from "@/data/searchData";
+import { searchSite, SEARCH_INDEX } from "@/data/searchData";
 import {
   Search,
   X,
@@ -44,15 +44,17 @@ const POPULAR_SEARCHES = [
 export function SearchPageClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialQuery = searchParams.get("q") || "";
+  const urlQuery = searchParams.get("q") || "";
 
-  const [query, setQuery] = useState(initialQuery);
+  const [query, setQuery] = useState(urlQuery);
+  const [prevUrlQuery, setPrevUrlQuery] = useState(urlQuery);
   const [activeCategory, setActiveCategory] = useState("All");
 
   // Keep query in sync if URL changes
-  useEffect(() => {
-    setQuery(searchParams.get("q") || "");
-  }, [searchParams]);
+  if (urlQuery !== prevUrlQuery) {
+    setPrevUrlQuery(urlQuery);
+    setQuery(urlQuery);
+  }
 
   // Compute search results
   const results = useMemo(() => {

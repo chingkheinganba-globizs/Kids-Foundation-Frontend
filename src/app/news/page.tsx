@@ -14,7 +14,6 @@ import {
   Search,
   FileText,
   Bell,
-  ArrowRight,
 } from "lucide-react";
 
 const CATEGORIES = [
@@ -25,39 +24,6 @@ const CATEGORIES = [
   "Achievements",
   "Events & Culture",
 ] as const;
-
-const CATEGORY_STYLES: Record<string, { bg: string; text: string; border: string }> = {
-  "Circulars & Notices": {
-    bg: "bg-blue-50",
-    text: "text-blue-700",
-    border: "border-blue-200",
-  },
-  "Academic & Exams": {
-    bg: "bg-emerald-50",
-    text: "text-emerald-700",
-    border: "border-emerald-200",
-  },
-  Admissions: {
-    bg: "bg-amber-50",
-    text: "text-amber-800",
-    border: "border-amber-200",
-  },
-  Achievements: {
-    bg: "bg-purple-50",
-    text: "text-purple-700",
-    border: "border-purple-200",
-  },
-  "Events & Culture": {
-    bg: "bg-rose-50",
-    text: "text-rose-700",
-    border: "border-rose-200",
-  },
-  Governance: {
-    bg: "bg-slate-100",
-    text: "text-slate-700",
-    border: "border-slate-300",
-  },
-};
 
 export default function NewsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
@@ -233,12 +199,6 @@ export default function NewsPage() {
             <div className="space-y-3.5">
               {filteredArticles.map((item) => {
                 const isExpanded = expandedIds.has(item.id);
-                const catStyle =
-                  CATEGORY_STYLES[item.category] || {
-                    bg: "bg-slate-100",
-                    text: "text-slate-700",
-                    border: "border-slate-200",
-                  };
 
                 return (
                   <div

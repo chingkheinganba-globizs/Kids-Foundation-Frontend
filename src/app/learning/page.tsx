@@ -5,7 +5,6 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageBanner } from "@/components/ui/PageBanner";
 import { LEARNING_PAGE_DATA } from "@/data/learningPage";
-import { IMAGES } from "@/data/images";
 
 export const metadata: Metadata = {
   title: "Learning | Kids' Foundation",

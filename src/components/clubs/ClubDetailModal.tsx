@@ -4,13 +4,10 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import {
   X,
-  Clock,
   MapPin,
   User,
-  Users,
   Award,
   CheckCircle2,
-  Calendar,
   Sparkles,
   Send,
   ArrowRight,
@@ -25,6 +22,7 @@ interface ClubDetailModalProps {
 export function ClubDetailModal({ club, onClose }: ClubDetailModalProps) {
   const [activeTab, setActiveTab] = useState<"details" | "join">("details");
   const [submitted, setSubmitted] = useState(false);
+  const [prevClub, setPrevClub] = useState(club);
   const [formData, setFormData] = useState({
     studentName: "",
     grade: "",
@@ -32,16 +30,19 @@ export function ClubDetailModal({ club, onClose }: ClubDetailModalProps) {
     reason: "",
   });
 
+  if (club !== prevClub) {
+    setPrevClub(club);
+    setActiveTab("details");
+    setSubmitted(false);
+  }
+
   useEffect(() => {
+    if (!club) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
-    if (club) {
-      window.addEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "hidden";
-      setActiveTab("details");
-      setSubmitted(false);
-    }
+    window.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "unset";

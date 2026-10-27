@@ -7,7 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, Search, ChevronDown, ArrowRight } from "lucide-react";
 import { IMAGES } from "@/data/images";
 import { cn } from "@/lib/utils";
-import { searchSite, SearchResultItem } from "@/data/searchData";
+import { searchSite } from "@/data/searchData";
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -19,6 +19,14 @@ export function Header() {
   const pathname = usePathname();
   const router = useRouter();
 
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setMobileMenuOpen(false);
+    setAboutDropdownOpen(false);
+    setNewsDropdownOpen(false);
+  }
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -27,12 +35,6 @@ export function Header() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  useEffect(() => {
-    setMobileMenuOpen(false);
-    setAboutDropdownOpen(false);
-    setNewsDropdownOpen(false);
-  }, [pathname]);
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";

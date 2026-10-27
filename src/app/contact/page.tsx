@@ -1,12 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageBanner } from "@/components/ui/PageBanner";
 import { CONTACT_PAGE_DATA } from "@/data/contactPage";
-import { IMAGES } from "@/data/images";
 import { MapPin, Phone, Smartphone, Mail, Clock, Loader2, AlertCircle } from "lucide-react";
 
 const iconMap = {

@@ -1,12 +1,10 @@
 import React from "react";
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageBanner } from "@/components/ui/PageBanner";
 import { ADMISSION_PAGE_DATA } from "@/data/admissionPage";
-import { IMAGES } from "@/data/images";
 import { Download } from "lucide-react";
 
 export const metadata: Metadata = {

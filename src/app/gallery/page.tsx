@@ -6,7 +6,6 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageBanner } from "@/components/ui/PageBanner";
 import { GALLERY_PAGE_DATA } from "@/data/galleryPage";
-import { IMAGES } from "@/data/images";
 import { ImageLightbox } from "@/components/ui/ImageLightbox";
 
 export default function GalleryPage() {

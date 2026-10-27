@@ -15,7 +15,7 @@ export function AdmissionsSection() {
           {admissions.label}
         </span>
 
-        <h2 className="text-2xl sm:text-3xl lg:text-[36px] font-bold text-[#17345F] leading-[1.22] tracking-tight mb-3 sm:mb-4">
+        <h2 className="text-2xl sm:text-3xl lg:text-[36px] font-bold text-[#17345F] leading-[1.25] tracking-tight mb-3 sm:mb-4 whitespace-pre-line">
           {admissions.heading}
         </h2>
 

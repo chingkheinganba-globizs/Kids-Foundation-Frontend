@@ -1,3 +1,4 @@
+
 import { ContactInfo, FooterLink, SocialLink } from "@/types";
 
 export const SITE_CONFIG = {
@@ -42,11 +43,11 @@ export const SITE_CONFIG = {
 
   admissions: {
     label: "ADMISSIONS",
-    heading: "Give your child the Foundation to go further.",
+    heading: "Give your child the\nFoundation to go further.",
     description:
       "Discover a school where learning is joyful, curiosity is encouraged, and every child is given room to grow.",
     primaryBtn: { label: "Explore Admissions", href: "/admission" },
-    secondaryBtn: { label: "Book a Campus Tour", href: "/contact" },
+    secondaryBtn: { label: "Get in Touch", href: "/contact" },
   },
 
   contact: {

@@ -29,6 +29,6 @@ export const ALL_NAV_LINKS: NavItem[] = [
 ];
 
 export const HEADER_ACTIONS: HeaderAction[] = [
-  { label: "Book a Tour", href: "/contact", variant: "outline" },
+  { label: "Get in Touch", href: "/contact", variant: "outline" },
   { label: "Enquire Now", href: "/admission", variant: "solid" },
 ];

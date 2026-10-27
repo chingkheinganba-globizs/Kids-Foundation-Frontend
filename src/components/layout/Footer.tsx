@@ -152,18 +152,9 @@ export function Footer({
                     <li key={link.label}>
                       <Link
                         href={link.href}
-                        className={
-                          link.href === "/mandatory-public-disclosure"
-                            ? "text-[#17345F] font-bold hover:text-[#F47C61] transition-colors flex items-center gap-1.5"
-                            : "hover:text-[#F47C61] transition-colors font-medium block"
-                        }
+                        className="hover:text-[#F47C61] transition-colors font-normal block"
                       >
                         {link.label}
-                        {link.href === "/mandatory-public-disclosure" && (
-                          <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">
-                            Official
-                          </span>
-                        )}
                       </Link>
                     </li>
                   ))}
