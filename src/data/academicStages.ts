@@ -12,7 +12,7 @@ export const ACADEMIC_STAGES: AcademicStage[] = [
   {
     id: "early-years",
     tabNumber: "01.",
-    tabLabel: "Early Years",
+    tabLabel: "Foundational",
     subLabel: "PRE-NURSERY • NURSERY • LKG • UKG • AGES 3–5",
     heading: "Nurturing wonder & play",
     description:
@@ -26,7 +26,7 @@ export const ACADEMIC_STAGES: AcademicStage[] = [
   {
     id: "primary",
     tabNumber: "02.",
-    tabLabel: "Primary",
+    tabLabel: "Preparatory",
     subLabel: "CLASSES I – V • AGES 6–10",
     heading: "Building core skills & discovery",
     description:
@@ -38,8 +38,22 @@ export const ACADEMIC_STAGES: AcademicStage[] = [
     imageAlt: "Primary students participating actively in group learning at Kids' Foundation",
   },
   {
-    id: "secondary",
+    id: "middle",
     tabNumber: "03.",
+    tabLabel: "Middle School",
+    subLabel: "CLASSES VI – VIII • AGES 11–13",
+    heading: "Expanding horizons & inquiry",
+    description:
+      "Middle school strengthens conceptual understanding and independent thinking. Students explore diverse subjects, collaborate on projects, and develop problem-solving skills in a supportive environment.",
+    tags: ["Inquiry-Based Learning", "Collaboration", "Project Work"],
+    linkText: "Explore Middle School →",
+    linkHref: "/learning#middle",
+    image: IMAGES.academic.secondary,
+    imageAlt: "Middle school students learning at Kids' Foundation",
+  },
+  {
+    id: "secondary",
+    tabNumber: "04.",
     tabLabel: "Secondary",
     subLabel: "CLASSES VI – X • AGES 11–15",
     heading: "Fostering analytical thinking",

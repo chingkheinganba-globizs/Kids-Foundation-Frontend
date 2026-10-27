@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { NEWS_ITEMS, NEWS_HEADER } from "@/data/news";
@@ -146,7 +146,16 @@ export function NewsSection() {
   const [activeTab, setActiveTab] = useState<"events" | "news">("events");
   const newsScrollRef = useRef<HTMLDivElement>(null);
 
-  const filteredItems = NEWS_ITEMS.filter((item) => item.category === activeTab);
+  const filteredItems = useMemo(() => {
+    const items = NEWS_ITEMS.filter((item) => item.category === activeTab);
+    if (activeTab === "events") {
+      // Sort newest first (by date string), show only the latest 3
+      return [...items].sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      ).slice(0, 3);
+    }
+    return items;
+  }, [activeTab]);
 
   return (
     <section id="news" className="py-12 sm:py-16 lg:py-20 bg-[#FAF7F2] relative overflow-hidden">

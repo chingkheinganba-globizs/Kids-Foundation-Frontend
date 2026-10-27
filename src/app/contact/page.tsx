@@ -7,7 +7,7 @@ import { Footer } from "@/components/layout/Footer";
 import { PageBanner } from "@/components/ui/PageBanner";
 import { CONTACT_PAGE_DATA } from "@/data/contactPage";
 import { IMAGES } from "@/data/images";
-import { MapPin, Phone, Smartphone, Mail, Clock } from "lucide-react";
+import { MapPin, Phone, Smartphone, Mail, Clock, Loader2, AlertCircle } from "lucide-react";
 
 const iconMap = {
   "map-pin": MapPin,
@@ -25,17 +25,63 @@ export default function ContactPage() {
     phone: "",
     subject: "",
     message: "",
+    hp_website: "", // Honeypot anti-spam field
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormState((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormState((prev) => ({ ...prev, [name]: value }));
+    if (errorMessage) {
+      setErrorMessage(null);
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Frontend-only: show success message. Backend submission will be added during Strapi phase.
-    setSubmitted(true);
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    setErrorMessage(null);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formState),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setSubmitted(true);
+        setFormState({
+          name: "",
+          email: "",
+          phone: "",
+          subject: "",
+          message: "",
+          hp_website: "",
+        });
+      } else {
+        setErrorMessage(
+          data.message ||
+            "Unable to send your message. Please check your details and try again."
+        );
+      }
+    } catch {
+      setErrorMessage(
+        "Network connection error. Please check your internet connection or call the school office directly."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const contactItems = [
@@ -119,7 +165,15 @@ export default function ContactPage() {
                         type="button"
                         onClick={() => {
                           setSubmitted(false);
-                          setFormState({ name: "", email: "", phone: "", subject: "", message: "" });
+                          setErrorMessage(null);
+                          setFormState({
+                            name: "",
+                            email: "",
+                            phone: "",
+                            subject: "",
+                            message: "",
+                            hp_website: "",
+                          });
                         }}
                         className="mt-4 text-sm text-[#F47C61] hover:text-[#E0684E] font-semibold transition-colors cursor-pointer"
                       >
@@ -127,58 +181,97 @@ export default function ContactPage() {
                       </button>
                     </div>
                   ) : (
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {form.fields.map((field) => (
-                          <div key={field.name}>
-                            <label
-                              htmlFor={field.name}
-                              className="block text-xs font-semibold text-[#17345F] mb-1.5"
-                            >
-                              {field.label}
-                              {field.required && <span className="text-[#F47C61] ml-0.5">*</span>}
-                            </label>
-                            <input
-                              type={field.type}
-                              id={field.name}
-                              name={field.name}
-                              placeholder={field.placeholder}
-                              required={field.required}
-                              value={formState[field.name as keyof typeof formState]}
-                              onChange={handleChange}
-                              className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-[#17345F] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#F47C61]/30 focus:border-[#F47C61] transition-all"
-                            />
-                          </div>
-                        ))}
-                      </div>
-
-                      <div>
-                        <label
-                          htmlFor={form.messageField.name}
-                          className="block text-xs font-semibold text-[#17345F] mb-1.5"
+                    <div>
+                      {errorMessage && (
+                        <div
+                          role="alert"
+                          className="mb-5 p-3.5 sm:p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs sm:text-sm flex items-start gap-2.5 animate-fadeIn"
                         >
-                          {form.messageField.label}
-                          {form.messageField.required && <span className="text-[#F47C61] ml-0.5">*</span>}
-                        </label>
-                        <textarea
-                          id={form.messageField.name}
-                          name={form.messageField.name}
-                          placeholder={form.messageField.placeholder}
-                          required={form.messageField.required}
-                          value={formState.message}
-                          onChange={handleChange}
-                          rows={5}
-                          className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-[#17345F] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#F47C61]/30 focus:border-[#F47C61] transition-all resize-none"
-                        />
-                      </div>
+                          <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                          <div className="flex-1 font-medium">{errorMessage}</div>
+                        </div>
+                      )}
 
-                      <button
-                        type="submit"
-                        className="inline-flex items-center justify-center bg-[#F47C61] hover:bg-[#E0684E] text-white text-sm font-semibold px-7 py-3 rounded-full shadow-sm hover:shadow-md transition-all duration-200 active:scale-98 cursor-pointer"
-                      >
-                        {form.submitLabel}
-                      </button>
-                    </form>
+                      <form onSubmit={handleSubmit} className="space-y-4">
+                        {/* Honeypot field for anti-spam (hidden from genuine users) */}
+                        <div
+                          className="opacity-0 absolute -left-[9999px] h-0 w-0 z-[-1] pointer-events-none"
+                          aria-hidden="true"
+                        >
+                          <label htmlFor="hp_website">Leave this field blank</label>
+                          <input
+                            type="text"
+                            id="hp_website"
+                            name="hp_website"
+                            tabIndex={-1}
+                            autoComplete="off"
+                            value={formState.hp_website}
+                            onChange={handleChange}
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          {form.fields.map((field) => (
+                            <div key={field.name}>
+                              <label
+                                htmlFor={field.name}
+                                className="block text-xs font-semibold text-[#17345F] mb-1.5"
+                              >
+                                {field.label}
+                                {field.required && <span className="text-[#F47C61] ml-0.5">*</span>}
+                              </label>
+                              <input
+                                type={field.type}
+                                id={field.name}
+                                name={field.name}
+                                placeholder={field.placeholder}
+                                required={field.required}
+                                disabled={isSubmitting}
+                                value={formState[field.name as keyof typeof formState]}
+                                onChange={handleChange}
+                                className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-[#17345F] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#F47C61]/30 focus:border-[#F47C61] disabled:bg-slate-50 disabled:text-slate-500 transition-all"
+                              />
+                            </div>
+                          ))}
+                        </div>
+
+                        <div>
+                          <label
+                            htmlFor={form.messageField.name}
+                            className="block text-xs font-semibold text-[#17345F] mb-1.5"
+                          >
+                            {form.messageField.label}
+                            {form.messageField.required && <span className="text-[#F47C61] ml-0.5">*</span>}
+                          </label>
+                          <textarea
+                            id={form.messageField.name}
+                            name={form.messageField.name}
+                            placeholder={form.messageField.placeholder}
+                            required={form.messageField.required}
+                            disabled={isSubmitting}
+                            value={formState.message}
+                            onChange={handleChange}
+                            rows={5}
+                            className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-sm text-[#17345F] placeholder:text-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#F47C61]/30 focus:border-[#F47C61] disabled:bg-slate-50 disabled:text-slate-500 transition-all resize-none"
+                          />
+                        </div>
+
+                        <button
+                          type="submit"
+                          disabled={isSubmitting}
+                          className="inline-flex items-center justify-center bg-[#F47C61] hover:bg-[#E0684E] disabled:bg-[#F47C61]/70 disabled:cursor-not-allowed text-white text-sm font-semibold px-7 py-3 rounded-full shadow-sm hover:shadow-md transition-all duration-200 active:scale-98 cursor-pointer"
+                        >
+                          {isSubmitting ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                              <span>Sending Message...</span>
+                            </>
+                          ) : (
+                            form.submitLabel
+                          )}
+                        </button>
+                      </form>
+                    </div>
                   )}
                 </div>
               </div>
@@ -189,13 +282,28 @@ export default function ContactPage() {
         {/* Map Section */}
         <section className="py-12 sm:py-16 lg:py-20 bg-[#FAF7F2]">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 lg:px-[100px]">
-            <div className="text-center mb-8 sm:mb-12">
-              <span className="text-[#D97706] font-semibold text-xs sm:text-[13px] tracking-[0.25em] uppercase mb-2.5 sm:mb-3 inline-block leading-normal">
-                FIND US
-              </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-[36px] font-bold text-[#17345F] leading-[1.22] tracking-tight">
-                Visit Our Campus
-              </h2>
+            <div className="flex flex-col sm:flex-row items-center sm:items-end justify-between gap-4 mb-8 sm:mb-10 text-center sm:text-left">
+              <div>
+                <span className="text-[#D97706] font-semibold text-xs sm:text-[13px] tracking-[0.25em] uppercase mb-2.5 sm:mb-3 inline-block leading-normal">
+                  FIND US
+                </span>
+                <h2 className="text-2xl sm:text-3xl lg:text-[36px] font-bold text-[#17345F] leading-[1.22] tracking-tight">
+                  Visit Our Campus
+                </h2>
+                <p className="text-sm text-[#64748B] mt-1.5">
+                  Airport Road, NH 150, Ghari, Imphal, Manipur 795001
+                </p>
+              </div>
+
+              <a
+                href={map.directUrl || "https://maps.app.goo.gl/r4iHwsCX75x88wnq6"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-white hover:bg-[#17345F] text-[#17345F] hover:text-white px-5 py-2.5 rounded-full border border-slate-300 text-xs sm:text-sm font-semibold shadow-sm hover:shadow-md transition-all duration-200 group shrink-0"
+              >
+                <MapPin className="w-4 h-4 text-[#F47C61] group-hover:text-white transition-colors" />
+                <span>Open in Google Maps</span>
+              </a>
             </div>
 
             <div className="w-full aspect-[4/3] sm:aspect-[16/9] lg:aspect-[16/7] rounded-2xl overflow-hidden shadow-[0_8px_24px_rgba(23,52,95,0.08)] border border-slate-200 bg-[#E7EEF8]">

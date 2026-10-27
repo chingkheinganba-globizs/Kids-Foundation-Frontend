@@ -7,7 +7,7 @@ import { Footer } from "@/components/layout/Footer";
 import { PageBanner } from "@/components/ui/PageBanner";
 import { IMAGES } from "@/data/images";
 import { NEWS_ITEMS } from "@/data/news";
-import { Calendar, ArrowRight, Clock, MapPin, Tag } from "lucide-react";
+import { Clock, MapPin, Tag, ArrowRight } from "lucide-react";
 import { EventReaderModal } from "@/components/events/EventReaderModal";
 
 // Types
@@ -221,7 +221,6 @@ const FILTER_OPTIONS = [
   "Ceremony",
 ];
 
-const FEATURED = ALL_EVENTS.find((e) => e.tag === "upcoming") ?? ALL_EVENTS[0];
 
 // Event Card
 
@@ -334,96 +333,6 @@ export default function EventsPage() {
 
       <main className="flex-1 flex flex-col">
         <PageBanner title="Events" breadcrumb={["Events"]} />
-
-        {/* Featured Upcoming Event */}
-        <section className="py-12 sm:py-16 lg:py-20">
-          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 lg:px-[100px]">
-            <div className="mb-8">
-              <span className="text-[#D97706] font-semibold text-xs sm:text-[13px] tracking-[0.25em] uppercase inline-block leading-normal">
-                FEATURED EVENT
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
-              {/* Image */}
-              <div
-                onClick={() => setSelectedEvent(FEATURED)}
-                className="lg:col-span-6 relative rounded-2xl sm:rounded-3xl overflow-hidden min-h-[320px] sm:min-h-[420px] shadow-[0_16px_40px_rgba(23,52,95,0.12)] cursor-pointer group"
-              >
-                <Image
-                  src={FEATURED.image}
-                  alt={FEATURED.imageAlt}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  style={{ objectFit: "cover", objectPosition: "center" }}
-                  className="transition-transform duration-700 group-hover:scale-105"
-                  priority
-                />
-                <div className="absolute top-4 left-4">
-                  <span className="inline-flex items-center gap-1.5 bg-[#F47C61] text-white text-xs font-bold tracking-wide px-3 py-1.5 rounded-full uppercase">
-                    <Calendar className="w-3 h-3" />
-                    Upcoming
-                  </span>
-                </div>
-              </div>
-
-              {/* Text */}
-              <div className="lg:col-span-6 flex flex-col justify-center py-2">
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="bg-[#E7EEF8] text-[#17345F] text-xs font-semibold px-3 py-1 rounded-full">
-                    {FEATURED.category}
-                  </span>
-                </div>
-
-                <h2
-                  onClick={() => setSelectedEvent(FEATURED)}
-                  className="text-2xl sm:text-3xl lg:text-[36px] font-bold text-[#17345F] leading-[1.25] tracking-tight mb-5 hover:text-[#F47C61] transition-colors cursor-pointer"
-                >
-                  {FEATURED.title}
-                </h2>
-
-                <p className="text-sm sm:text-base text-[#475569] leading-[1.8] mb-6">
-                  {FEATURED.description}
-                </p>
-
-                <div className="space-y-3 mb-8">
-                  <div className="flex items-center gap-3 text-sm text-[#475569]">
-                    <div className="w-8 h-8 rounded-lg bg-[#E7EEF8] flex items-center justify-center flex-shrink-0">
-                      <Calendar className="w-4 h-4 text-[#17345F]" />
-                    </div>
-                    <span>{FEATURED.date}</span>
-                  </div>
-                  {FEATURED.time && (
-                    <div className="flex items-center gap-3 text-sm text-[#475569]">
-                      <div className="w-8 h-8 rounded-lg bg-[#E7EEF8] flex items-center justify-center flex-shrink-0">
-                        <Clock className="w-4 h-4 text-[#17345F]" />
-                      </div>
-                      <span>{FEATURED.time}</span>
-                    </div>
-                  )}
-                  {FEATURED.venue && (
-                    <div className="flex items-center gap-3 text-sm text-[#475569]">
-                      <div className="w-8 h-8 rounded-lg bg-[#E7EEF8] flex items-center justify-center flex-shrink-0">
-                        <MapPin className="w-4 h-4 text-[#17345F]" />
-                      </div>
-                      <span>{FEATURED.venue}</span>
-                    </div>
-                  )}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setSelectedEvent(FEATURED)}
-                  className="inline-flex items-center gap-2 bg-[#17345F] text-white font-semibold text-sm px-6 py-3 rounded-xl hover:bg-[#F47C61] transition-colors duration-300 self-start cursor-pointer shadow-xs active:scale-98"
-                  aria-label={`Learn more about: ${FEATURED.title}`}
-                >
-                  <span>Learn More</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* All Events Grid */}
         <section className="py-12 sm:py-16 lg:py-20 bg-[#FAF7F2]">

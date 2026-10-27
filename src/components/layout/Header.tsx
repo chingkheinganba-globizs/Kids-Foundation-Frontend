@@ -225,23 +225,29 @@ export function Header() {
                     >
                       News & Updates
                     </Link>
+                    <Link
+                      href="/news/publications"
+                      className="block px-4 py-2.5 rounded-lg text-[13px] font-medium transition-colors text-white/90 hover:bg-white/10 hover:text-white"
+                    >
+                      Publications
+                    </Link>
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Mandatory Disclosure */}
+            {/* Clubs & Activities */}
             <Link
-              href="/mandatory-public-disclosure"
+              href="/clubs-and-activities"
               className={cn(
                 "relative text-[13px] xl:text-[14px] font-medium transition-colors py-1 whitespace-nowrap",
-isActive("/mandatory-public-disclosure")
+                isActive("/clubs-and-activities") || isActive("/clubs")
                   ? "text-white font-semibold"
                   : "text-white/85 hover:text-white"
               )}
             >
-              Mandatory Disclosure
-              {isActive("/mandatory-public-disclosure") && (
+              Clubs & Activities
+              {(isActive("/clubs-and-activities") || isActive("/clubs")) && (
                 <span className="absolute -bottom-1 left-0 right-0 h-[2.5px] bg-[#FBBF24] rounded-full" />
               )}
             </Link>
@@ -366,8 +372,9 @@ isActive("/mandatory-public-disclosure")
               { label: "Gallery", href: "/gallery" },
               { label: "Admissions", href: "/admission" },
               { label: "Events", href: "/events" },
-               { label: "News & Updates", href: "/news" },
-              { label: "Mandatory Disclosure", href: "/mandatory-public-disclosure" },
+              { label: "News & Updates", href: "/news" },
+              { label: "Publications", href: "/news/publications" },
+              { label: "Clubs & Activities", href: "/clubs-and-activities" },
               { label: "Contact", href: "/contact" },
             ].map((item) => (
               <Link

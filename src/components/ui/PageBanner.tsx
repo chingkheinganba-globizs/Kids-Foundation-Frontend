@@ -21,6 +21,10 @@ export function PageBanner({ title, breadcrumb, image }: PageBannerProps) {
     "mandatory disclosure": "/images/pages_hero_background_image/mandatorydisclosure_hero.jpg",
     "mandatory public disclosure": "/images/pages_hero_background_image/mandatorydisclosure_hero.jpg",
     news: "/images/pages_hero_background_image/news_hero.jpg",
+    publications: "/images/pages_hero_background_image/news_hero.jpg",
+    "clubs & activities": "/images/pages_hero_background_image/sports_and_arts_hero.jpg",
+    "clubs and activities": "/images/pages_hero_background_image/sports_and_arts_hero.jpg",
+    clubs: "/images/pages_hero_background_image/sports_and_arts_hero.jpg",
   };
   const resolvedImage = image || imageMap[title.toLowerCase()] || IMAGES.heroBg;
   return (

@@ -9,10 +9,7 @@ import {
   MapPin,
   Tag,
   Share2,
-  Printer,
-  CheckCircle2,
   ArrowLeft,
-  Sparkles,
 } from "lucide-react";
 
 export interface EventModalItem {
@@ -56,9 +53,6 @@ export function EventReaderModal({ event, onClose }: EventReaderModalProps) {
 
   if (!event) return null;
 
-  const handlePrint = () => {
-    window.print();
-  };
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -133,14 +127,6 @@ export function EventReaderModal({ event, onClose }: EventReaderModalProps) {
               aria-label="Share event"
             >
               <Share2 className="w-4 h-4" />
-            </button>
-            <button
-              onClick={handlePrint}
-              className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer hidden sm:flex"
-              title="Print Event Details"
-              aria-label="Print event details"
-            >
-              <Printer className="w-4 h-4" />
             </button>
             <button
               onClick={onClose}
@@ -255,26 +241,12 @@ export function EventReaderModal({ event, onClose }: EventReaderModalProps) {
             ))}
           </div>
 
-          {/* Highlights */}
-          <div className="bg-[#E8EFF8]/70 border border-[#D5E2F3] rounded-2xl p-5 sm:p-6">
-            <h4 className="text-xs sm:text-[13px] font-bold text-[#17345F] uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-[#D97706]" />
-              Event Highlights &amp; Instructions
-            </h4>
-            <ul className="space-y-2.5">
-              {highlights.map((h, i) => (
-                <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-[#475569]">
-                  <CheckCircle2 className="w-4 h-4 text-[#F47C61] shrink-0 mt-0.5" />
-                  <span>{h}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Attribution */}
-          <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-400 gap-2">
-            <span>Kids&apos; Foundation School Activities &amp; Events</span>
-            <span>Imphal, Manipur • CBSE Affiliation No: 1230049</span>
+          {/* Highlights as plain paragraphs */}
+          <div className="space-y-1.5">
+            <p className="text-xs font-semibold text-[#17345F] uppercase tracking-wider">Event Highlights &amp; Instructions</p>
+            {highlights.map((h, i) => (
+              <p key={i} className="text-sm text-[#475569] leading-[1.8]">{h}</p>
+            ))}
           </div>
         </div>
 

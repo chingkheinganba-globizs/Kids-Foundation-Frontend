@@ -20,57 +20,45 @@ export const ABOUT_PAGE_DATA = {
     ],
   },
 
-  values: {
-    label: "OUR VALUES",
-    heading: "Guided by strong values for a brighter future.",
-    description:
-      "We believe in nurturing not just academic excellence, but also strong values, empathy and a sense of responsibility. Our community works together to help every child grow into a confident, kind and capable individual.",
-    items: [
-      {
-        id: "holistic-learning",
-        title: "Holistic Learning",
-        description:
-          "Academic excellence, creativity and life skills for a balanced future.",
-        icon: "graduation-cap",
-        bgColor: "bg-[#EEF5FB]",
-        badgeBg: "bg-[#D4E6F8]",
-        iconColor: "text-[#2563EB]",
-      },
-      {
-        id: "values-care",
-        title: "Values & Care",
-        description:
-          "Respect, responsibility, empathy and kindness in every action.",
-        icon: "heart",
-        bgColor: "bg-[#FFF8EC]",
-        badgeBg: "bg-[#FEEBC8]",
-        iconColor: "text-[#D97706]",
-      },
-      {
-        id: "curiosity",
-        title: "Curiosity",
-        description:
-          "Encouraging questions, exploration and a love for learning.",
-        icon: "lightbulb",
-        bgColor: "bg-[#FEF1EC]",
-        badgeBg: "bg-[#FDD9CD]",
-        iconColor: "text-[#E05638]",
-      },
-      {
-        id: "community",
-        title: "Community",
-        description:
-          "Building strong relationships with families and society.",
-        icon: "users",
-        bgColor: "bg-[#EEF8F1]",
-        badgeBg: "bg-[#D2EED9]",
-        iconColor: "text-[#16A34A]",
-      },
-    ],
-  },
+  pillars: [
+    {
+      id: "mission",
+      title: "Our Mission",
+      description:
+        "Widen the Child's opportunities for the highest level of cognitive, social, physical, emotional and aesthetic growth while cultivating multiple intelligence.",
+    },
+    {
+      id: "philosophy",
+      title: "Our Philosophy",
+      description:
+        "The World is getting smaller everyday with the technology and communication explosion. The paradigm shift from local to global is a continuous process of change and the need.",
+    },
+    {
+      id: "vision",
+      title: "Our Vision",
+      description:
+        "Shaping happy, life-long learners who will succeed in and contribute to the global community.",
+    },
+  ],
 
-  quote: {
-    text: "Together, we nurture confident learners for a better tomorrow.",
+
+  founderMessage: {
+    tag: "FOUNDER'S MESSAGE",
+    heading: "A Word from Our Founder",
+    welcome: "Welcome to Kids' Foundation School, Imphal.",
+    paragraphs: [
+      "At Kids' Foundation, we believe education is about developing the whole child — nurturing curiosity, confidence, creativity, and the cognitive, social, physical, emotional, and aesthetic growth of every young learner.",
+      "The world is changing faster than ever, and our mission is to prepare children not merely for examinations, but for life. Through quality teaching, hands-on experiential learning, and a supportive, values-grounded environment, we nurture confident learners who are ready to adapt, excel, and contribute meaningfully to society.",
+      "We encourage every learner to pursue academic excellence, cultivate a lifelong love for discovery, and step into the world with integrity and empathy.",
+    ],
+    quote:
+      "“Education is not merely the study of textbooks — it is the cultivation of curiosity, character, integrity, and joyful lifelong learning.”",
+    closing:
+      "I warmly invite you to join our institution and become part of a community dedicated to academic distinction, holistic character, and the pursuit of excellence.",
+    founderName: "Founder's Name",
+    founderRole: "Founder & Chairman",
+    institution: "Kids' Foundation School,\nImphal, Manipur",
+    image: "/images/founder.png",
   },
 };
 

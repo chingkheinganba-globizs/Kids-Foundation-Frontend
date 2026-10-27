@@ -7,7 +7,7 @@ export const ADMISSION_PAGE_DATA = {
   enquiry: {
     heading: "Admission Enquiry",
     description: "Please visit us with a prior appointment between 9:00 am to 3:00 pm from Monday to Friday for a campus tour, information about the school, curriculum overview, facilities and fee structure.",
-    email: "kidsfoundationimphal@gmail.com",
+    email: "kidsfoundationghari@gmail.com",
     phone: "0385-2456231",
     downloadLabel: "Download Admission Form",
     downloadHref: "#",

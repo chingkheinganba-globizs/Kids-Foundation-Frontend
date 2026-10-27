@@ -277,7 +277,7 @@ export const DISCLOSURE_PAGE_DATA = {
         },
         { slNo: 5, information: "PRINCIPAL/VICE", details: "Ch. Sunitibala Devi" },
         { slNo: 6, information: "PRINCIPAL QUALIFICATION", details: "MA English, B.Ed." },
-        { slNo: 7, information: "SCHOOL EMAIL ID", details: "kidsfoundationimphal@gmail.com" },
+        { slNo: 7, information: "SCHOOL EMAIL ID", details: "kidsfoundationghari@gmail.com" },
         { slNo: 8, information: "CONTACT DETAILS (LANDLINE/MOBILE)", details: "0385-2456231" },
       ] satisfies DisclosureTableRow[],
     },

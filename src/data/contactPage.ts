@@ -22,7 +22,7 @@ export const CONTACT_PAGE_DATA = {
     },
     email: {
       label: "Email",
-      value: "kidsfoundationimphal@gmail.com",
+      value: "kidsfoundationghari@gmail.com",
       icon: "mail",
     },
     hours: {
@@ -46,7 +46,10 @@ export const CONTACT_PAGE_DATA = {
   },
 
   map: {
-    embedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3621.123456789!2d93.9!3d24.8!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sKids%20Foundation!5e0!3m2!1sen!2sin!4v1234567890",
-    title: "Kids' Foundation Location",
+    embedUrl:
+      "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7244.770281699026!2d93.9014291!3d24.7776411!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3749261ea6480eaf%3A0xba24397b1a9bc2f6!2sKids%E2%80%99%20Foundation%20School%20%7C%20Manipur!5e0!3m2!1sen!2sin!4v1730000000000!5m2!1sen!2sin",
+    directUrl:
+      "https://www.google.com/maps/place/Kids%E2%80%99+Foundation+School+%7C+Manipur/@24.7764361,93.9105756,16z/data=!4m6!3m5!1s0x3749261ea6480eaf:0xba24397b1a9bc2f6!8m2!3d24.7764361!4d93.9105756!16s%2Fg%2F1hc2jgz_7",
+    title: "Kids’ Foundation School | Manipur Location",
   },
 };

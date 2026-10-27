@@ -412,13 +412,60 @@ export const SEARCH_INDEX: SearchResultItem[] = [
     keywords: ["gallery", "photos", "pictures", "images", "campus life"],
   },
 
-  // ── 9. Contact Us ──
+  // ── 9. Publications ──
+  {
+    id: "publications-budding-sprouts",
+    title: "School Publications, Magazines & Handbooks",
+    category: "News & Events",
+    description:
+      "Explore and download The Budding Sprouts school magazine, curriculum handbooks, Green Chronicle newsletter, and annual sports souvenirs.",
+    href: "/news/publications",
+    keywords: [
+      "publication",
+      "publications",
+      "magazine",
+      "budding sprouts",
+      "newsletter",
+      "handbook",
+      "curriculum",
+      "download",
+      "pdf",
+      "annual report",
+    ],
+  },
+
+  // ── 10. Clubs & Activities ──
+  {
+    id: "clubs-and-activities",
+    title: "Clubs & Activities (Robotics, Eco, Debate, Taekwondo, Arts)",
+    category: "Sports & Arts",
+    description:
+      "Explore student societies at Kids' Foundation: Robotics & STEM Lab, Eco Warriors Nature Club, Literary & Debate Society, Tae-Kwon-Do Academy, Fine Arts, and Chess.",
+    href: "/clubs-and-activities",
+    keywords: [
+      "clubs",
+      "club",
+      "activities",
+      "robotics",
+      "stem",
+      "eco warriors",
+      "debate",
+      "model un",
+      "taekwondo",
+      "martial arts",
+      "arts",
+      "music",
+      "chess",
+    ],
+  },
+
+  // ── 11. Contact Us ──
   {
     id: "contact-school",
     title: "Contact Kids' Foundation & Campus Visit",
     category: "Contact",
     description:
-      "Airport Road, Ghari, Imphal West, Manipur – 795001. Phone: 0385-2456231, Mobile: +91 8974426944 / +91 8787302983, Email: kidsfoundationimphal@gmail.com.",
+      "Airport Road, Ghari, Imphal West, Manipur – 795001. Phone: 0385-2456231, Mobile: +91 8974426944 / +91 8787302983, Email: kidsfoundationghari@gmail.com.",
     href: "/contact",
     keywords: [
       "contact",

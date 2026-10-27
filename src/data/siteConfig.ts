@@ -37,7 +37,7 @@ export const SITE_CONFIG = {
     paragraph2:
       "With a world-class curriculum and supportive environment, we prepare children not just for examinations, but for life — as happy, lifelong learners ready to grow, adapt and contribute to the world.",
     linkText: "Learn more →",
-    linkHref: "/about",
+    linkHref: "/about#founder-message",
   },
 
   admissions: {
@@ -53,7 +53,7 @@ export const SITE_CONFIG = {
     address: "Airport Road, Ghari, Imphal-West, Manipur - 795001, India",
     mobile: ["+91 8974426944", "+91 8787302983"],
     phone: "0385-2456231",
-    email: "kidsfoundationimphal@gmail.com",
+    email: "kidsfoundationghari@gmail.com",
     cbseAffiliationNo: "1230049",
     estdYear: "2005",
   } satisfies ContactInfo,
@@ -68,17 +68,17 @@ export const SITE_CONFIG = {
       { label: "About Our School", href: "/about" },
       { label: "Learning & Classes", href: "/learning" },
       { label: "Campus Facilities", href: "/campus" },
+      { label: "Clubs & Activities", href: "/clubs-and-activities" },
       { label: "Sports & Arts", href: "/about/sports-and-arts" },
-      { label: "Student Life", href: "/gallery" },
       { label: "Admissions Info", href: "/admission" },
       { label: "Photo Gallery", href: "/gallery" },
+      { label: "Contact Us", href: "/contact" },
     ] satisfies FooterLink[],
     disclosureLinks: [
       { label: "Mandatory Public Disclosure", href: "/mandatory-public-disclosure" },
-      { label: "CBSE Transfer Certificates", href: "#" },
-      { label: "Admission Kit Resources", href: "#" },
-      { label: "School Prospectus (PDF)", href: "#" },
-      { label: "Privacy Policy", href: "#" },
+      { label: "News and Updates", href: "/news" },
+      { label: "Events", href: "/events" },
+      { label: "Publications", href: "/news/publications" },
     ] satisfies FooterLink[],
     socialLinks: [
       {

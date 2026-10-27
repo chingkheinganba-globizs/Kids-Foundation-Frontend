@@ -123,10 +123,10 @@ export function Footer({
                 </div>
               </div>
 
-              {/* Column 2: Navigation */}
+              {/* Column 2: Quick Links */}
               <div className="lg:col-span-2 xl:col-span-2 flex flex-col">
                 <h4 className="text-base sm:text-lg font-bold text-[#17345F] mb-4 sm:mb-6">
-                  Navigation
+                  Quick Links
                 </h4>
                 <ul className="space-y-3 sm:space-y-4 text-sm sm:text-[14.5px] text-[#475569]">
                   {footer.navigationLinks.map((link) => (
@@ -142,19 +142,28 @@ export function Footer({
                 </ul>
               </div>
 
-              {/* Column 3: Mandatory Disclosures */}
+              {/* Column 3: Important Links */}
               <div className="lg:col-span-3 xl:col-span-3 flex flex-col">
                 <h4 className="text-base sm:text-lg font-bold text-[#17345F] mb-4 sm:mb-6">
-                  Mandatory Disclosures
+                  Important Links
                 </h4>
                 <ul className="space-y-3 sm:space-y-4 text-sm sm:text-[14.5px] text-[#475569]">
                   {footer.disclosureLinks.map((link) => (
                     <li key={link.label}>
                       <Link
                         href={link.href}
-                        className="hover:text-[#F47C61] transition-colors font-medium block"
+                        className={
+                          link.href === "/mandatory-public-disclosure"
+                            ? "text-[#17345F] font-bold hover:text-[#F47C61] transition-colors flex items-center gap-1.5"
+                            : "hover:text-[#F47C61] transition-colors font-medium block"
+                        }
                       >
                         {link.label}
+                        {link.href === "/mandatory-public-disclosure" && (
+                          <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">
+                            Official
+                          </span>
+                        )}
                       </Link>
                     </li>
                   ))}
@@ -212,10 +221,13 @@ export function Footer({
             </div>
 
             {/* Bottom Subtle Divider and Copyright */}
-            <div className="mt-10 sm:mt-14 pt-6 sm:pt-8 border-t border-slate-200/70 text-center">
+            <div className="mt-10 sm:mt-14 pt-6 sm:pt-8 border-t border-slate-200/70 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
               <p className="text-xs sm:text-[12.5px] text-[#64748B] font-normal">
                 {footer.copyright}
               </p>
+             
+                
+            
             </div>
           </div>
         </div>

@@ -2,11 +2,13 @@ import React from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { HeroSection } from "@/components/home/HeroSection";
+import { ExcellenceBanner } from "@/components/home/ExcellenceBanner";
 import { AboutSection } from "@/components/home/AboutSection";
 import { AcademicStages } from "@/components/home/AcademicStages";
 import { FounderMessage } from "@/components/home/FounderMessage";
 import { NewsSection } from "@/components/home/NewsSection";
 import { GallerySection } from "@/components/home/GallerySection";
+import { FloatingEnquireTab } from "@/components/home/FloatingEnquireTab";
 
 export default function Home() {
   return (
@@ -17,6 +19,9 @@ export default function Home() {
       <main className="flex-1 flex flex-col">
         {/* 2. Hero Section */}
         <HeroSection />
+
+        {/* 2.5 Milestone Ribbon: 20+ Years of Academic Excellence */}
+        <ExcellenceBanner />
 
         {/* 3. About Kids' Foundation */}
         <AboutSection />
@@ -36,6 +41,9 @@ export default function Home() {
         {/* 8. Admissions + Footer (one continuous section sharing the grass-hill background) */}
         <Footer />
       </main>
+
+      {/* 9. Floating Enquire Now Right-Side Tab */}
+      <FloatingEnquireTab />
     </div>
   );
 }
