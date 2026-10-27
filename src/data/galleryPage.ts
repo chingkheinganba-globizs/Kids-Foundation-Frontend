@@ -1,0 +1,95 @@
+export const GALLERY_PAGE_DATA = {
+  banner: {
+    title: "Photo Gallery",
+    breadcrumb: ["Gallery"],
+  },
+
+  categories: ["All", "Campus", "Academics", "Sports", "Culture", "Events"],
+
+  images: [
+    {
+      id: "gal-1",
+      src: "/images/gallery-science-lab.jpg",
+      alt: "Students performing experiments in the science lab",
+      category: "Academics",
+      title: "Science & Laboratory",
+    },
+    {
+      id: "gal-2",
+      src: "/images/gallery-taekwondo.jpg",
+      alt: "Students practicing taekwondo on the school grounds",
+      category: "Sports",
+      title: "Taekwondo Training",
+    },
+    {
+      id: "gal-3",
+      src: "/images/gallery-dance.jpg",
+      alt: "Student performing classical Manipuri dance",
+      category: "Culture",
+      title: "Cultural Dance Performance",
+    },
+    {
+      id: "gal-4",
+      src: "/images/gallery-exam-hall.jpg",
+      alt: "Students in the examination hall",
+      category: "Academics",
+      title: "Examination Hall",
+    },
+    {
+      id: "gal-5",
+      src: "/images/gallery-school-group.jpg",
+      alt: "Faculty and students gathered in front of school",
+      category: "Events",
+      title: "School Community",
+    },
+    {
+      id: "gal-6",
+      src: "/images/campus-aerial.jpg",
+      alt: "Aerial view of Kids' Foundation campus",
+      category: "Campus",
+      title: "Campus Aerial View",
+    },
+    {
+      id: "gal-7",
+      src: "/images/academic-early-years.jpg",
+      alt: "Early years students in classroom",
+      category: "Academics",
+      title: "Early Years Learning",
+    },
+    {
+      id: "gal-8",
+      src: "/images/academic-primary.jpg",
+      alt: "Primary students in group activity",
+      category: "Academics",
+      title: "Primary School Activities",
+    },
+    {
+      id: "gal-9",
+      src: "/images/academic-secondary.jpg",
+      alt: "Secondary students focused on studies",
+      category: "Academics",
+      title: "Secondary School",
+    },
+    {
+      id: "gal-10",
+      src: "/images/academic-senior-secondary.jpg",
+      alt: "Senior secondary students in class",
+      category: "Academics",
+      title: "Senior Secondary",
+    },
+    {
+      id: "gal-11",
+      src: "/images/news-cultural-meet.jpg",
+      alt: "Students at cultural meet event",
+      category: "Events",
+      title: "Cultural Meet",
+    },
+    {
+      id: "gal-12",
+      src: "/images/news-teaching-workshop.jpg",
+      alt: "Teachers at training workshop",
+      category: "Events",
+      title: "Teaching Workshop",
+    },
+  ],
+};
