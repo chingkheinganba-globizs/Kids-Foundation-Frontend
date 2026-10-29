@@ -32,9 +32,26 @@ export function getStrapiURL(path: string = ""): string {
 /**
  * Formats a Strapi media URL (prepends STRAPI_URL if it is a relative path)
  */
-export function getStrapiMediaUrl(media?: StrapiMedia | string | null): string {
+export function getStrapiMediaUrl(media?: any): string {
   if (!media) return "";
-  const url = typeof media === "string" ? media : media.url;
+  if (typeof media === "string") {
+    if (media.startsWith("http://") || media.startsWith("https://") || media.startsWith("//")) {
+      return media;
+    }
+    return `${STRAPI_URL}${media.startsWith("/") ? media : `/${media}`}`;
+  }
+
+  // Handle arrays if multiple files returned
+  const target = Array.isArray(media) ? media[0] : media;
+  if (!target) return "";
+
+  const url =
+    target.url ||
+    target.data?.attributes?.url ||
+    target.data?.url ||
+    target.attributes?.url ||
+    "";
+
   if (!url) return "";
   if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("//")) {
     return url;
@@ -61,7 +78,7 @@ async function fetchStrapi<T>(endpoint: string, tags: string[] = []): Promise<T 
     });
 
     if (!res.ok) {
-      // 404 or Strapi offline: return null to trigger graceful fallback
+      console.warn(`[fetchStrapi] Non-OK response (${res.status} ${res.statusText}) for: ${url}`);
       return null;
     }
 
@@ -81,8 +98,9 @@ async function fetchStrapi<T>(endpoint: string, tags: string[] = []): Promise<T 
     }
 
     return json.data as T;
-  } catch {
+  } catch (err) {
     // Strapi server unreachable in local dev or network failure: fail silently to local fallback
+    console.warn(`[fetchStrapi] Network error for: ${url}`, err);
     return null;
   }
 }
@@ -109,7 +127,7 @@ export async function getFooterData(): Promise<FooterData | null> {
 }
 
 /**
- * Fetch Home Page Singleton Data (Hero, Excellence Banner, About, Founder, Headers, Admissions CTA)
+ * Fetch Home Page Singleton Data (Hero, Excellence Banner)
  */
 export async function getHomePageData(): Promise<HomePageData | null> {
   const query = [
@@ -117,12 +135,6 @@ export async function getHomePageData(): Promise<HomePageData | null> {
     "populate[hero][populate][primaryCta]=*",
     "populate[hero][populate][secondaryCta]=*",
     "populate[excellenceBanner]=*",
-    "populate[about][populate]=*",
-    "populate[academicStagesHeader]=*",
-    "populate[founderMessage][populate]=*",
-    "populate[newsSectionHeader]=*",
-    "populate[gallerySectionHeader]=*",
-    "populate[admissionsCta][populate]=*",
   ].join("&");
 
   return fetchStrapi<HomePageData>(`home-page?${query}`, ["home-page"]);

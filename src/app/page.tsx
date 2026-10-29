@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { HeroSection } from "@/components/home/HeroSection";
 import { ExcellenceBanner } from "@/components/home/ExcellenceBanner";
 import { AboutSection } from "@/components/home/AboutSection";
@@ -60,11 +60,13 @@ export default async function Home() {
       />
 
       {/* 6. News and Updates - dynamic latest 4 events & latest 10 news */}
-      <NewsSection
-        headerData={homeData?.newsSectionHeader}
-        newsPageData={newsPageData}
-        eventsPageData={eventsPageData}
-      />
+      <Suspense fallback={null}>
+        <NewsSection
+          headerData={homeData?.newsSectionHeader}
+          newsPageData={newsPageData}
+          eventsPageData={eventsPageData}
+        />
+      </Suspense>
 
       {/* 7. Photo Gallery - dynamic latest 6 uploads */}
       <GallerySection

@@ -22,31 +22,42 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ data }: HeroSectionProps) {
-  const heroBadge = data?.badge || SITE_CONFIG.hero.badge;
-  const heroHeadingLine1 = data?.headingLine1 || SITE_CONFIG.hero.headingLine1;
-  const heroHeadingLine2 = data?.headingLine2 || SITE_CONFIG.hero.headingLine2;
-  const heroDescription = data?.description || SITE_CONFIG.hero.description;
+  const heroBadge = data?.badge ?? SITE_CONFIG.hero.badge;
+  const heroHeadingLine1 = data?.headingLine1 ?? SITE_CONFIG.hero.headingLine1;
+  const heroHeadingLine2 = data?.headingLine2 !== undefined ? data.headingLine2 : SITE_CONFIG.hero.headingLine2;
+  const heroDescription = data?.description ?? SITE_CONFIG.hero.description;
   const heroPrimaryBtn = {
-    label: data?.primaryCta?.label || SITE_CONFIG.hero.primaryBtn.label,
-    href: data?.primaryCta?.href || SITE_CONFIG.hero.primaryBtn.href,
+    label: data?.primaryCta?.label ?? SITE_CONFIG.hero.primaryBtn.label,
+    href: data?.primaryCta?.href ?? SITE_CONFIG.hero.primaryBtn.href,
   };
   const heroSecondaryBtn = {
-    label: data?.secondaryCta?.label || SITE_CONFIG.hero.secondaryBtn.label,
-    href: data?.secondaryCta?.href || SITE_CONFIG.hero.secondaryBtn.href,
+    label: data?.secondaryCta?.label ?? SITE_CONFIG.hero.secondaryBtn.label,
+    href: data?.secondaryCta?.href ?? SITE_CONFIG.hero.secondaryBtn.href,
   };
-  const heroScrollIndicator = data?.scrollIndicator || SITE_CONFIG.hero.scrollIndicator;
+  const heroScrollIndicator = data?.scrollIndicator ?? SITE_CONFIG.hero.scrollIndicator;
 
   // Strapi slides or local fallback
-  const slides =
+  const validSlides =
     data?.slides && data.slides.length > 0
-      ? data.slides.map((s) => ({
-          src: getStrapiMediaUrl(s.media) || "/images/banner_images/slider1.gif",
-          alt: s.alt || "Kids' Foundation School",
-        }))
-      : SLIDES;
+      ? data.slides
+          .map((s) => ({
+            src: getStrapiMediaUrl(s.media),
+            alt: s.alt || "Kids' Foundation School",
+          }))
+          .filter((s) => Boolean(s.src))
+      : [];
+
+  const slides = validSlides.length > 0 ? validSlides : SLIDES;
 
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+
+  // Keep index within bounds if slide count changes
+  useEffect(() => {
+    if (current >= slides.length) {
+      setCurrent(0);
+    }
+  }, [slides.length, current]);
 
   const nextSlide = useCallback(() => {
     setCurrent((prev) => (prev + 1) % slides.length);
@@ -79,7 +90,7 @@ export function HeroSection({ data }: HeroSectionProps) {
       <div className="absolute inset-0 z-0">
         {slides.map((slide, index) => (
           <div
-            key={slide.src}
+            key={`${slide.src}-${index}`}
             className={cn(
               "absolute inset-0 transition-opacity duration-1000 ease-in-out",
               index === current ? "opacity-100" : "opacity-0"
@@ -118,8 +129,12 @@ export function HeroSection({ data }: HeroSectionProps) {
           {/* Main Heading */}
           <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-[52px] font-extrabold text-white tracking-tight leading-[1.15] drop-shadow-xs">
             {heroHeadingLine1}
-            <br />
-            {heroHeadingLine2}
+            {heroHeadingLine2 ? (
+              <>
+                <br />
+                {heroHeadingLine2}
+              </>
+            ) : null}
           </h1>
 
           {/* Description */}

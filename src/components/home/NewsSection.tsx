@@ -196,11 +196,17 @@ export function NewsSection({
     return NEWS_ITEMS.filter((i) => i.category === "events").slice(0, 4);
   }, [eventsPageData]);
 
+  const [currentTimestamp, setCurrentTimestamp] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    setCurrentTimestamp(Date.now());
+  }, []);
+
   // 2. Dynamic News: Exact same data as /news page, sorted latest-on-top, max 10
   const latest10News = useMemo(() => {
     if (newsPageData?.articles && newsPageData.articles.length > 0) {
       const thresholdDays = newsPageData.latestDaysThreshold || 14;
-      const sorted = formatAndSortNewsArticles(newsPageData.articles, thresholdDays);
+      const sorted = formatAndSortNewsArticles(newsPageData.articles, thresholdDays, currentTimestamp);
 
       return sorted.slice(0, 10).map((a) => ({
         id: a.id,
@@ -232,7 +238,7 @@ export function NewsSection({
       category: "News",
       linkHref: "/news",
     }));
-  }, [newsPageData, articlesData]);
+  }, [newsPageData, articlesData, currentTimestamp]);
 
   return (
     <section id="news" className="py-12 sm:py-16 lg:py-20 bg-[#FAF7F2] relative overflow-hidden">

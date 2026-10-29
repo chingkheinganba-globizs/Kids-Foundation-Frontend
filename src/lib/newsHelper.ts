@@ -8,7 +8,7 @@ import { getStrapiMediaUrl } from "@/lib/strapi";
  * as well as slash/hyphen formats ("25/10/26", "25/10/2026", "25-10-2026").
  */
 export function parseNoticeDate(dateStr?: string, fallbackIndex = 0): number {
-  if (!dateStr) return Date.now() - fallbackIndex * 86400000;
+  if (!dateStr) return fallbackIndex ? -fallbackIndex : 0;
 
   const trimmed = dateStr.trim();
 
@@ -33,7 +33,7 @@ export function parseNoticeDate(dateStr?: string, fallbackIndex = 0): number {
     }
   }
 
-  return Date.now() - fallbackIndex * 86400000;
+  return fallbackIndex ? -fallbackIndex : 0;
 }
 
 /**
@@ -61,13 +61,17 @@ export function formatDisplayDate(dateStr?: string): string {
  */
 export function formatAndSortNewsArticles(
   rawArticles?: NewsItemData[],
-  defaultThresholdDays: number = 14
+  defaultThresholdDays: number = 14,
+  currentTimestamp?: number
 ): NewsUpdateItem[] {
   if (!rawArticles || rawArticles.length === 0) {
     return [];
   }
 
-  const now = Date.now();
+  // Avoid unstable Date.now() evaluation during server prerender of Client Components
+  const now =
+    currentTimestamp ??
+    (typeof window !== "undefined" ? Date.now() : undefined);
 
   const formatted: NewsUpdateItem[] = rawArticles.map((item, idx) => {
     const sortId = typeof item.id === "number" ? item.id : idx;
@@ -87,14 +91,17 @@ export function formatAndSortNewsArticles(
 
     const timestamp = parseNoticeDate(item.date, idx);
     const itemDaysThreshold = item.daysToShowLatest ?? defaultThresholdDays;
-    const diffMs = now - timestamp;
-    const diffDays = diffMs / (1000 * 60 * 60 * 24);
 
-    // Dynamic 14-day rule:
-    // Notice shows "• LATEST" if within `itemDaysThreshold` days (and not explicitly false)
-    // Once diffDays > itemDaysThreshold, the latest mark disappears automatically.
-    const isWithinDays = diffDays <= itemDaysThreshold;
-    const isLatest = item.isLatest !== false && isWithinDays;
+    let isLatest = item.isLatest !== false;
+    if (now !== undefined && timestamp > 0) {
+      const diffMs = now - timestamp;
+      const diffDays = diffMs / (1000 * 60 * 60 * 24);
+      // Dynamic 14-day rule:
+      // Notice shows "• LATEST" if within `itemDaysThreshold` days (and not explicitly false)
+      // Once diffDays > itemDaysThreshold, the latest mark disappears automatically.
+      const isWithinDays = diffDays <= itemDaysThreshold && diffDays >= 0;
+      isLatest = isLatest && isWithinDays;
+    }
     return {
       id: item.newsId || `news-${item.id || idx}`,
       sortId,
