@@ -1,6 +1,20 @@
 import { NewsUpdateItem } from "@/data/newsUpdatesData";
 
 export function downloadNoticeDocument(item: NewsUpdateItem) {
+  if (item.documentUrl) {
+    const a = document.createElement("a");
+    a.href = item.documentUrl;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    if (item.documentName) {
+      a.download = item.documentName;
+    }
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    return;
+  }
+
   if (item.noticeImage) {
     const a = document.createElement("a");
     a.href = item.noticeImage;

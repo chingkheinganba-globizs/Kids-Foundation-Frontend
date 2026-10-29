@@ -3,8 +3,6 @@
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { PageBanner } from "@/components/ui/PageBanner";
 import { searchSite, SEARCH_INDEX } from "@/data/searchData";
 import {
@@ -108,9 +106,7 @@ export function SearchPageClient() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-white overflow-x-hidden selection:bg-[#F47C61] selection:text-white">
-      <Header />
-
+    <div className="relative flex-1 flex flex-col bg-white overflow-x-hidden selection:bg-[#F47C61] selection:text-white">
       <main className="flex-1 flex flex-col">
         {/* Banner */}
         <PageBanner
@@ -283,8 +279,6 @@ export function SearchPageClient() {
           </div>
         </section>
 
-        {/* Footer with Admissions Section */}
-        <Footer showAdmissions={true} />
       </main>
     </div>
   );

@@ -1,11 +1,10 @@
 import React from "react";
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { PageBanner } from "@/components/ui/PageBanner";
 import { ABOUT_PAGE_DATA } from "@/data/aboutPage";
 import { GraduationCap } from "lucide-react";
+import { getAboutPageData, getStrapiMediaUrl } from "@/lib/strapi";
 
 export const metadata: Metadata = {
   title: "About Us | Kids' Foundation",
@@ -13,19 +12,62 @@ export const metadata: Metadata = {
     "Learn about Kids' Foundation — a CBSE-affiliated co-educational school in Imphal providing holistic education from Pre-Nursery to tenth standard.",
 };
 
-export default function AboutPage() {
-  const { banner, story, founderMessage, pillars } = ABOUT_PAGE_DATA;
+export default async function AboutPage() {
+  const strapiData = await getAboutPageData();
+
+  const banner = {
+    title: strapiData?.pageTitle || ABOUT_PAGE_DATA.banner.title,
+    breadcrumb: strapiData?.breadcrumb || ABOUT_PAGE_DATA.banner.breadcrumb,
+  };
+
+  const story = {
+    label: strapiData?.storyLabel || ABOUT_PAGE_DATA.story.label,
+    heading: strapiData?.storyHeading || ABOUT_PAGE_DATA.story.heading,
+    topParagraphs:
+      strapiData?.storyTopParagraphs && strapiData.storyTopParagraphs.length > 0
+        ? strapiData.storyTopParagraphs
+        : ABOUT_PAGE_DATA.story.topParagraphs,
+    image: getStrapiMediaUrl(strapiData?.storyImage) || ABOUT_PAGE_DATA.story.image,
+    imageAlt: strapiData?.storyImageAlt || ABOUT_PAGE_DATA.story.imageAlt,
+    bottomParagraphs:
+      strapiData?.storyBottomParagraphs && strapiData.storyBottomParagraphs.length > 0
+        ? strapiData.storyBottomParagraphs
+        : ABOUT_PAGE_DATA.story.bottomParagraphs,
+  };
+
+  const pillars =
+    strapiData?.pillars && strapiData.pillars.length > 0
+      ? strapiData.pillars.map((p, idx) => ({
+          id: p.keyId || ABOUT_PAGE_DATA.pillars[idx]?.id || `pillar-${idx}`,
+          title: p.title,
+          description: p.description || "",
+        }))
+      : ABOUT_PAGE_DATA.pillars;
+
+  const founderMessage = {
+    tag: strapiData?.founderTag || ABOUT_PAGE_DATA.founderMessage.tag,
+    heading: strapiData?.founderHeading || ABOUT_PAGE_DATA.founderMessage.heading,
+    welcome: strapiData?.founderWelcome || ABOUT_PAGE_DATA.founderMessage.welcome,
+    paragraphs:
+      strapiData?.founderParagraphs && strapiData.founderParagraphs.length > 0
+        ? strapiData.founderParagraphs
+        : ABOUT_PAGE_DATA.founderMessage.paragraphs,
+    quote: strapiData?.founderQuote || ABOUT_PAGE_DATA.founderMessage.quote,
+    closing: strapiData?.founderClosing || ABOUT_PAGE_DATA.founderMessage.closing,
+    founderName: strapiData?.founderName || ABOUT_PAGE_DATA.founderMessage.founderName,
+    founderRole: strapiData?.founderRole || ABOUT_PAGE_DATA.founderMessage.founderRole,
+    institution: strapiData?.founderInstitution || ABOUT_PAGE_DATA.founderMessage.institution,
+    image: getStrapiMediaUrl(strapiData?.founderImage) || ABOUT_PAGE_DATA.founderMessage.image,
+  };
 
   return (
-    <div className="relative min-h-screen flex flex-col overflow-x-hidden selection:bg-[#F47C61] selection:text-white">
-      <Header />
-
+    <div className="relative flex-1 flex flex-col overflow-x-hidden selection:bg-[#F47C61] selection:text-white">
       <main className="flex-1 flex flex-col">
         {/* Page Banner */}
         <PageBanner title={banner.title} breadcrumb={banner.breadcrumb} />
 
         {/* ── Section 1: Our Story ── */}
-        <section className="py-12 sm:py-16 lg:py-20">
+        <section id="our-story" className="py-12 sm:py-16 lg:py-20 scroll-mt-20 sm:scroll-mt-24">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 lg:px-[100px]">
             {/* Top Row: Heading + First 2 Paragraphs + Campus Image */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start mb-6 sm:mb-8">
@@ -173,8 +215,6 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ── Section 3: Admissions CTA & Footer ── */}
-        <Footer showAdmissions={true} />
       </main>
     </div>
   );

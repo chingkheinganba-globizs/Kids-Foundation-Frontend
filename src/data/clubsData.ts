@@ -3,9 +3,9 @@ import { IMAGES } from "@/data/images";
 export interface Club {
   id: string;
   name: string;
-  tagline: string;
+  tagline?: string;
   category: "STEM & Innovation" | "Arts & Culture" | "Sports & Wellness" | "Literary & Debate" | "Social & Eco";
-  gradeLevel: string;
+  gradeLevel?: string;
   meetingSchedule: string;
   location: string;
   mentor: string;
@@ -15,8 +15,8 @@ export interface Club {
   badgeColor: string;
   accentGradient: string;
   image: string;
-  keyActivities: string[];
-  learningOutcomes: string[];
+  keyActivities?: string[];
+  learningOutcomes?: string[];
   recentHighlight: string;
 }
 

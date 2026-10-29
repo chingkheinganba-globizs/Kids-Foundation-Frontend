@@ -4,6 +4,10 @@ import "./globals.css";
 import { SITE_CONFIG } from "@/data/siteConfig";
 import { BackToTopButton } from "@/components/ui/BackToTopButton";
 
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { getHeaderData, getFooterData, getHomePageData } from "@/lib/strapi";
+
 const jakartaSans = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
   subsets: ["latin"],
@@ -42,25 +46,39 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.ico" },
-      { url: "/images/logo.png", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
     ],
-    apple: "/images/logo.png",
+    apple: "/apple-icon.png",
     shortcut: "/favicon.ico",
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [headerData, footerData, homeData] = await Promise.all([
+    getHeaderData(),
+    getFooterData(),
+    getHomePageData(),
+  ]);
+
   return (
-    <html lang="en" className={`${jakartaSans.variable} scroll-smooth`}>
-      <body className="min-h-screen flex flex-col antialiased text-[#17345F]">
-        {children}
+    <html lang="en" className={`${jakartaSans.variable} scroll-smooth`} suppressHydrationWarning>
+      <body className="min-h-screen flex flex-col antialiased text-[#17345F]" suppressHydrationWarning>
+        <Header headerData={headerData} />
+        <div className="flex-1 flex flex-col">
+          {children}
+        </div>
+        <Footer
+          footerData={footerData}
+          admissionsData={homeData?.admissionsCta}
+        />
         <BackToTopButton />
       </body>
     </html>
   );
 }
+

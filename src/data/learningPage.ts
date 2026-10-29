@@ -36,6 +36,26 @@ export const LEARNING_PAGE_DATA = {
       imageAlt: "Primary students in classroom activities",
     },
     {
+      id: "middle",
+      title: "MIDDLE SCHOOL LEARNING",
+      boldIntro: "Expanding horizons, critical enquiry and self-discovery.",
+      description: [
+        "The middle school years (Classes VI – VIII) form a vital bridge between foundational learning and advanced academic pursuits. Students transition into more rigorous subject-specific disciplines, exploring modern science, mathematics, languages, social sciences, and computer education.",
+        "Our experiential learning methodology encourages analytical thinking, peer collaboration, and independent inquiry, empowering young minds with confidence and academic rigor.",
+      ],
+      activities: [
+        "SCIENCE EXPERIMENTS & LAB DEMONSTRATIONS",
+        "MATHEMATICS & LOGICAL REASONING",
+        "DEBATE, ELOCUTION & PUBLIC SPEAKING",
+        "CODING & DIGITAL LITERACY",
+        "SPORTS, PHYSICAL EDUCATION & YOGA",
+        "CREATIVE ARTS & CRAFT WORKSHOPS",
+      ],
+      bottomText: "Middle school prepares students to transition seamlessly into senior academic stages with discipline and intellectual clarity.",
+      image: "/images/academic-secondary.jpg",
+      imageAlt: "Middle school students engaged in interactive learning",
+    },
+    {
       id: "secondary",
       title: "SECONDARY LEARNING",
       boldIntro: "Education must be multi-dimensional because every child innately is.",

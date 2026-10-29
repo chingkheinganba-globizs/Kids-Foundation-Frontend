@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { PageBanner } from "@/components/ui/PageBanner";
 import {
   DISCLOSURE_PAGE_DATA,
@@ -81,9 +79,7 @@ Kids' Foundation, Imphal
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-white overflow-x-hidden selection:bg-[#F47C61] selection:text-white">
-      <Header />
-
+    <div className="relative flex-1 flex flex-col bg-white overflow-x-hidden selection:bg-[#F47C61] selection:text-white">
       <main className="flex-1 flex flex-col">
         {/* Page Banner */}
         <PageBanner title={banner.title} breadcrumb={banner.breadcrumb} />
@@ -458,9 +454,6 @@ Kids' Foundation, Imphal
           onClose={() => setSelectedDoc(null)}
           onDownload={handleDownload}
         />
-
-        {/* Footer with Admissions Section */}
-        <Footer showAdmissions={true} />
       </main>
     </div>
   );

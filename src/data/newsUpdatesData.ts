@@ -9,6 +9,8 @@ export interface NewsUpdateItem {
   documentName?: string;
   documentSize?: string;
   documentType?: string;
+  documentUrl?: string;
+  sortId?: number;
   fullContent?: string[];
   noticeImage?: string;
   isLatest?: boolean;

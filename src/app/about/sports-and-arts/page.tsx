@@ -1,10 +1,9 @@
 import React from "react";
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { PageBanner } from "@/components/ui/PageBanner";
 import { SPORTS_ARTS_DATA } from "@/data/sportsArtsData";
+import { getSportsArtsPageData, getStrapiMediaUrl } from "@/lib/strapi";
 
 export const metadata: Metadata = {
   title: "Sports & Arts | Kids' Foundation",
@@ -12,14 +11,45 @@ export const metadata: Metadata = {
     "Explore sports, athletics, martial arts, yoga, fine arts, and performing arts programs at Kids' Foundation School, Imphal.",
 };
 
-export default function SportsAndArtsPage() {
-  const { banner, intro, activities, facilitiesCallout, gallery } =
-    SPORTS_ARTS_DATA;
+export default async function SportsAndArtsPage() {
+  const strapiData = await getSportsArtsPageData();
+
+  const banner = {
+    title: strapiData?.pageTitle || SPORTS_ARTS_DATA.banner.title,
+    breadcrumb: strapiData?.breadcrumb || SPORTS_ARTS_DATA.banner.breadcrumb,
+  };
+
+  const intro = {
+    label: strapiData?.introLabel || SPORTS_ARTS_DATA.intro.label,
+    title: strapiData?.introTitle || SPORTS_ARTS_DATA.intro.title,
+    lead: strapiData?.introLead || SPORTS_ARTS_DATA.intro.lead,
+  };
+
+  const activities =
+    strapiData?.activities && strapiData.activities.length > 0
+      ? strapiData.activities
+      : SPORTS_ARTS_DATA.activities;
+
+  const facilitiesCallout =
+    strapiData?.facilitiesCallout && strapiData.facilitiesCallout.length > 0
+      ? strapiData.facilitiesCallout
+      : SPORTS_ARTS_DATA.facilitiesCallout;
+
+  const gallery =
+    strapiData?.gallery && strapiData.gallery.length > 0
+      ? strapiData.gallery.map((g, idx) => ({
+          title: g.title || SPORTS_ARTS_DATA.gallery[idx]?.title || "Activity",
+          category: g.category || SPORTS_ARTS_DATA.gallery[idx]?.category || "Sports",
+          image:
+            getStrapiMediaUrl(g.image) ||
+            g.imageUrl ||
+            SPORTS_ARTS_DATA.gallery[idx]?.image ||
+            "/images/gallery-taekwondo.jpg",
+        }))
+      : SPORTS_ARTS_DATA.gallery;
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-white overflow-x-hidden selection:bg-[#F47C61] selection:text-white">
-      <Header />
-
+    <div className="relative flex-1 flex flex-col bg-white overflow-x-hidden selection:bg-[#F47C61] selection:text-white">
       <main className="flex-1 flex flex-col">
         {/* Page Banner */}
         <PageBanner title={banner.title} breadcrumb={banner.breadcrumb} />
@@ -93,8 +123,6 @@ export default function SportsAndArtsPage() {
           </div>
         </section>
 
-        {/* Footer with Admissions */}
-        <Footer showAdmissions={true} />
       </main>
     </div>
   );

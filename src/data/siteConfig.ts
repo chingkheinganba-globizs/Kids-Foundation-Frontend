@@ -27,8 +27,8 @@ export const SITE_CONFIG = {
       "At Kids' Foundation, we believe education is about developing the whole child. Our learning environment encourages students to question, explore, collaborate and discover their own strengths.",
     paragraph2:
       "From the early years through senior school, we create opportunities for children to grow intellectually, socially, physically and emotionally — building not only knowledge, but the confidence and curiosity to use it.",
-    linkText: "Discover Our Approach →",
-    linkHref: "/learning",
+    linkText: "Discover Our Story →",
+    linkHref: "/about#our-story",
   },
 
   founder: {

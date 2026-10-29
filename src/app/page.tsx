@@ -1,6 +1,4 @@
 import React from "react";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { HeroSection } from "@/components/home/HeroSection";
 import { ExcellenceBanner } from "@/components/home/ExcellenceBanner";
 import { AboutSection } from "@/components/home/AboutSection";
@@ -9,38 +7,70 @@ import { FounderMessage } from "@/components/home/FounderMessage";
 import { NewsSection } from "@/components/home/NewsSection";
 import { GallerySection } from "@/components/home/GallerySection";
 import { FloatingEnquireTab } from "@/components/home/FloatingEnquireTab";
+import {
+  getHomePageData,
+  getAboutPageData,
+  getLearningPageData,
+  getEventsPageData,
+  getNewsPageData,
+  getGalleryPageData,
+} from "@/lib/strapi";
 
-export default function Home() {
+export default async function Home() {
+  const [
+    homeData,
+    aboutPageData,
+    learningPageData,
+    eventsPageData,
+    newsPageData,
+    galleryPageData,
+  ] = await Promise.all([
+    getHomePageData(),
+    getAboutPageData(),
+    getLearningPageData(),
+    getEventsPageData(),
+    getNewsPageData(),
+    getGalleryPageData(),
+  ]);
+
   return (
-    <div className="relative min-h-screen flex flex-col bg-white overflow-x-hidden selection:bg-[#F47C61] selection:text-white">
-      {/* 1. Header / Navigation Bar */}
-      <Header />
+    <div className="relative flex-1 flex flex-col bg-white overflow-x-hidden selection:bg-[#F47C61] selection:text-white">
+      {/* 2. Hero Section */}
+      <HeroSection data={homeData?.hero} />
 
-      <main className="flex-1 flex flex-col">
-        {/* 2. Hero Section */}
-        <HeroSection />
+      {/* 2.5 Milestone Ribbon: 20+ Years of Academic Excellence */}
+      <ExcellenceBanner data={homeData?.excellenceBanner} />
 
-        {/* 2.5 Milestone Ribbon: 20+ Years of Academic Excellence */}
-        <ExcellenceBanner />
+      {/* 3. About Kids' Foundation - dynamic from about-page */}
+      <AboutSection
+        data={homeData?.about}
+        aboutPageData={aboutPageData}
+      />
 
-        {/* 3. About Kids' Foundation */}
-        <AboutSection />
+      {/* 4. Academic Stages - dynamic from learning-page */}
+      <AcademicStages
+        headerData={homeData?.academicStagesHeader}
+        learningPageData={learningPageData}
+      />
 
-        {/* 4. Academic Stages */}
-        <AcademicStages />
+      {/* 5. Message from the Founder - dynamic from about-page */}
+      <FounderMessage
+        data={homeData?.founderMessage}
+        aboutPageData={aboutPageData}
+      />
 
-        {/* 5. Message from the Founder */}
-        <FounderMessage />
+      {/* 6. News and Updates - dynamic latest 4 events & latest 10 news */}
+      <NewsSection
+        headerData={homeData?.newsSectionHeader}
+        newsPageData={newsPageData}
+        eventsPageData={eventsPageData}
+      />
 
-        {/* 6. News and Updates */}
-        <NewsSection />
-
-        {/* 7. Photo Gallery */}
-        <GallerySection />
-
-        {/* 8. Admissions + Footer (one continuous section sharing the grass-hill background) */}
-        <Footer />
-      </main>
+      {/* 7. Photo Gallery - dynamic latest 6 uploads */}
+      <GallerySection
+        headerData={homeData?.gallerySectionHeader}
+        galleryPageData={galleryPageData}
+      />
 
       {/* 9. Floating Enquire Now Right-Side Tab */}
       <FloatingEnquireTab />

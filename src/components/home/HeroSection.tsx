@@ -7,6 +7,9 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { SITE_CONFIG } from "@/data/siteConfig";
 import { cn } from "@/lib/utils";
 
+import { HeroSectionData } from "@/types/strapi";
+import { getStrapiMediaUrl } from "@/lib/strapi";
+
 const SLIDES = [
   { src: "/images/banner_images/slider1.gif", alt: "Kids' Foundation School - Welcome" },
   { src: "/images/banner_images/slide1.jpg", alt: "Kids' Foundation School - Campus Life" },
@@ -14,18 +17,44 @@ const SLIDES = [
   { src: "/images/banner_images/banner-1.jpg", alt: "Kids' Foundation School - Students" },
 ];
 
-export function HeroSection() {
-  const { hero } = SITE_CONFIG;
+interface HeroSectionProps {
+  data?: HeroSectionData | null;
+}
+
+export function HeroSection({ data }: HeroSectionProps) {
+  const heroBadge = data?.badge || SITE_CONFIG.hero.badge;
+  const heroHeadingLine1 = data?.headingLine1 || SITE_CONFIG.hero.headingLine1;
+  const heroHeadingLine2 = data?.headingLine2 || SITE_CONFIG.hero.headingLine2;
+  const heroDescription = data?.description || SITE_CONFIG.hero.description;
+  const heroPrimaryBtn = {
+    label: data?.primaryCta?.label || SITE_CONFIG.hero.primaryBtn.label,
+    href: data?.primaryCta?.href || SITE_CONFIG.hero.primaryBtn.href,
+  };
+  const heroSecondaryBtn = {
+    label: data?.secondaryCta?.label || SITE_CONFIG.hero.secondaryBtn.label,
+    href: data?.secondaryCta?.href || SITE_CONFIG.hero.secondaryBtn.href,
+  };
+  const heroScrollIndicator = data?.scrollIndicator || SITE_CONFIG.hero.scrollIndicator;
+
+  // Strapi slides or local fallback
+  const slides =
+    data?.slides && data.slides.length > 0
+      ? data.slides.map((s) => ({
+          src: getStrapiMediaUrl(s.media) || "/images/banner_images/slider1.gif",
+          alt: s.alt || "Kids' Foundation School",
+        }))
+      : SLIDES;
+
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
   const nextSlide = useCallback(() => {
-    setCurrent((prev) => (prev + 1) % SLIDES.length);
-  }, []);
+    setCurrent((prev) => (prev + 1) % slides.length);
+  }, [slides.length]);
 
   const prevSlide = useCallback(() => {
-    setCurrent((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
-  }, []);
+    setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
+  }, [slides.length]);
 
   const goToSlide = (index: number) => {
     setCurrent(index);
@@ -48,7 +77,7 @@ export function HeroSection() {
     >
       {/* Background Slider */}
       <div className="absolute inset-0 z-0">
-        {SLIDES.map((slide, index) => (
+        {slides.map((slide, index) => (
           <div
             key={slide.src}
             className={cn(
@@ -63,7 +92,7 @@ export function HeroSection() {
               priority={index === 0}
               sizes="100vw"
               className="object-cover object-center"
-              unoptimized={slide.src.endsWith(".gif")} // Important for animated GIF
+              unoptimized={slide.src.endsWith(".gif") || slide.src.includes(".gif")} // Important for animated GIF
             />
           </div>
         ))}
@@ -82,36 +111,36 @@ export function HeroSection() {
           {/* Badge */}
           <div className="inline-block mb-3 sm:mb-4">
             <span className="text-[#FBBF24] font-semibold text-xs sm:text-[13px] tracking-[0.25em] uppercase">
-              {hero.badge}
+              {heroBadge}
             </span>
           </div>
 
           {/* Main Heading */}
           <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-[52px] font-extrabold text-white tracking-tight leading-[1.15] drop-shadow-xs">
-            {hero.headingLine1}
+            {heroHeadingLine1}
             <br />
-            {hero.headingLine2}
+            {heroHeadingLine2}
           </h1>
 
           {/* Description */}
           <p className="mt-4 sm:mt-5 text-sm sm:text-base text-white/85 max-w-xl font-normal leading-relaxed">
-            {hero.description}
+            {heroDescription}
           </p>
 
           {/* Action Buttons */}
           <div className="mt-7 sm:mt-8 flex flex-wrap items-center gap-3.5">
             <Link
-              href={hero.primaryBtn.href}
+              href={heroPrimaryBtn.href}
               className="inline-flex items-center justify-center bg-[#F47C61] hover:bg-[#E0684E] text-white text-xs sm:text-sm font-semibold px-6 py-3 rounded-full shadow-md hover:shadow-lg transition-all duration-200 active:scale-98"
             >
-              {hero.primaryBtn.label}
+              {heroPrimaryBtn.label}
             </Link>
 
             <Link
-              href={hero.secondaryBtn.href}
+              href={heroSecondaryBtn.href}
               className="inline-flex items-center justify-center bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-medium px-6 py-3 rounded-full border border-white/35 backdrop-blur-xs transition-all duration-200 active:scale-98"
             >
-              {hero.secondaryBtn.label}
+              {heroSecondaryBtn.label}
             </Link>
           </div>
         </div>
@@ -132,7 +161,7 @@ export function HeroSection() {
 
           {/* Dots */}
           <div className="flex items-center gap-2.5">
-            {SLIDES.map((_, index) => (
+            {slides.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
@@ -163,7 +192,7 @@ export function HeroSection() {
           className="flex flex-col items-center text-white/70 hover:text-white transition-colors group cursor-pointer"
         >
           <span className="text-[10px] font-semibold tracking-[0.25em] uppercase mb-1.5">
-            {hero.scrollIndicator}
+            {heroScrollIndicator}
           </span>
           <div className="w-5 h-8 rounded-full border-2 border-white/40 group-hover:border-white/80 flex items-start justify-center p-1.5 transition-colors">
             <div className="w-1.5 h-2 bg-white/80 rounded-full animate-scroll-bounce" />

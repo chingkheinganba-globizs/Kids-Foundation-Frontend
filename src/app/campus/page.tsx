@@ -1,150 +1,61 @@
-"use client";
-
-import React, { useState } from "react";
-import Image from "next/image";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { PageBanner } from "@/components/ui/PageBanner";
+import React from "react";
+import type { Metadata } from "next";
 import { CAMPUS_PAGE_DATA } from "@/data/campusPage";
-import { ImageLightbox } from "@/components/ui/ImageLightbox";
+import { getCampusPageData, getStrapiMediaUrl } from "@/lib/strapi";
+import { CampusClient } from "@/components/campus/CampusClient";
 
-export default function CampusPage() {
-  const { banner, intro, galleryImages, video } = CAMPUS_PAGE_DATA;
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
+export const metadata: Metadata = {
+  title: "Campus Facilities & Tour | Kids' Foundation",
+  description:
+    "Explore the spacious 2-acre campus, modern facilities, sports grounds, science labs, and classrooms at Kids' Foundation School, Imphal.",
+};
 
-  const openLightbox = (index: number) => {
-    setLightboxIndex(index);
-    setLightboxOpen(true);
+export default async function CampusPage() {
+  const strapiData = await getCampusPageData();
+
+  const banner = {
+    title: strapiData?.pageTitle || CAMPUS_PAGE_DATA.banner.title,
+    breadcrumb: strapiData?.breadcrumb || CAMPUS_PAGE_DATA.banner.breadcrumb,
+  };
+
+  const intro = {
+    heading: strapiData?.introHeading || CAMPUS_PAGE_DATA.intro.heading,
+    title: strapiData?.introTitle || "Our campus at a glance",
+    description: strapiData?.introDescription || CAMPUS_PAGE_DATA.intro.description,
+    facilities:
+      strapiData?.facilities && strapiData.facilities.length > 0
+        ? strapiData.facilities
+        : CAMPUS_PAGE_DATA.intro.facilities,
+  };
+
+  const galleryImages =
+    strapiData?.galleryImages && strapiData.galleryImages.length > 0
+      ? strapiData.galleryImages.map((img, idx) => ({
+          src:
+            getStrapiMediaUrl(img.image) ||
+            img.imageUrl ||
+            CAMPUS_PAGE_DATA.galleryImages[idx]?.src ||
+            "/images/campus-aerial.jpg",
+          alt:
+            img.alt ||
+            img.title ||
+            CAMPUS_PAGE_DATA.galleryImages[idx]?.alt ||
+            "Campus image",
+        }))
+      : CAMPUS_PAGE_DATA.galleryImages;
+
+  const video = {
+    title: strapiData?.videoTitle || CAMPUS_PAGE_DATA.video.title,
+    youtubeId: strapiData?.youtubeId || CAMPUS_PAGE_DATA.video.youtubeId,
+    description: strapiData?.videoDescription || CAMPUS_PAGE_DATA.video.description,
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-white overflow-x-hidden selection:bg-[#F47C61] selection:text-white">
-      <Header />
-
-      <main className="flex-1 flex flex-col">
-        <PageBanner title={banner.title} breadcrumb={banner.breadcrumb} image="/images/campus-aerial.jpg" />
-
-        {/* Campus Intro */}
-        <section className="py-12 sm:py-16 lg:py-20 bg-white">
-          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 lg:px-[100px]">
-            <span className="text-[#D97706] font-semibold text-xs sm:text-[13px] tracking-[0.25em] uppercase mb-2.5 sm:mb-3 inline-block leading-normal">
-              {intro.heading}
-            </span>
-            <h2 className="text-2xl sm:text-3xl lg:text-[36px] font-bold text-[#17345F] leading-[1.25] tracking-tight mb-5">
-              Our campus at a glance
-            </h2>
-            <p className="text-sm sm:text-base text-[#475569] leading-[1.8] sm:leading-[1.85] max-w-3xl mb-7">
-              {intro.description}
-            </p>
-
-            {/* Facilities List */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 max-w-4xl">
-              {intro.facilities.map((facility, i) => {
-                const isUnderConstruction = facility.includes("(under construction)");
-                return (
-                  <div
-                    key={i}
-                    className="flex items-center gap-3 py-2.5 px-4 rounded-xl bg-[#F8FAFC] border border-slate-100 hover:border-slate-200 transition-colors"
-                  >
-                    <span className="w-2 h-2 rounded-full bg-[#D97706] shrink-0" />
-                    <span
-                      className={`text-sm ${
-                        isUnderConstruction
-                          ? "text-[#D97706] font-semibold"
-                          : "text-[#475569] font-medium"
-                      }`}
-                    >
-                      {facility}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        {/* Campus Image Gallery */}
-        <section className="py-12 sm:py-16 lg:py-20 bg-[#FAF7F2]">
-          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 lg:px-[100px]">
-            <div className="text-center mb-10 sm:mb-12">
-              <span className="text-[#D97706] font-semibold text-xs sm:text-[13px] tracking-[0.25em] uppercase mb-2.5 sm:mb-3 inline-block leading-normal">
-                CAMPUS GALLERY
-              </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-[36px] font-bold text-[#17345F] leading-[1.25] tracking-tight">
-                Explore our spaces
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
-              {galleryImages.map((img, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => openLightbox(index)}
-                  className="relative aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden shadow-[0_4px_16px_rgba(23,52,95,0.06)] group cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#F47C61] focus:ring-offset-2"
-                >
-                  <Image
-                    src={img.src}
-                    alt={img.alt}
-                    fill
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-[#17345F]/0 group-hover:bg-[#17345F]/30 transition-colors duration-300 flex items-center justify-center">
-                    <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm font-medium">
-                      View
-                    </span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Campus Video */}
-        <section className="py-12 sm:py-16 lg:py-20 bg-white">
-          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 lg:px-[100px]">
-            <div className="text-center mb-10 sm:mb-12">
-              <span className="text-[#D97706] font-semibold text-xs sm:text-[13px] tracking-[0.25em] uppercase mb-2.5 sm:mb-3 inline-block leading-normal">
-                VIRTUAL TOUR
-              </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-[36px] font-bold text-[#17345F] leading-[1.25] tracking-tight">
-                {video.title}
-              </h2>
-            </div>
-
-            <div className="max-w-4xl mx-auto">
-              <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-[0_16px_40px_rgba(23,52,95,0.12)] bg-[#17345F]">
-                <iframe
-                  src={`https://www.youtube.com/embed/${video.youtubeId}`}
-                  title={video.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="absolute inset-0 w-full h-full"
-                />
-              </div>
-              <p className="text-center text-sm text-[#64748B] mt-4 leading-relaxed">
-                {video.description}
-              </p>
-            </div>
-          </div>
-        </section>
-
-                <Footer />
-      </main>
-
-      {/* Lightbox */}
-      {lightboxOpen && (
-        <ImageLightbox
-          images={galleryImages.map((img) => ({
-            src: img.src,
-            alt: img.alt,
-          }))}
-          initialIndex={lightboxIndex}
-          onClose={() => setLightboxOpen(false)}
-        />
-      )}
-    </div>
+    <CampusClient
+      banner={banner}
+      intro={intro}
+      galleryImages={galleryImages}
+      video={video}
+    />
   );
 }

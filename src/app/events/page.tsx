@@ -1,34 +1,16 @@
-"use client";
-
-import React, { useState } from "react";
-import Image from "next/image";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { PageBanner } from "@/components/ui/PageBanner";
+import React from "react";
+import type { Metadata } from "next";
 import { IMAGES } from "@/data/images";
 import { NEWS_ITEMS } from "@/data/news";
-import { Clock, MapPin, Tag, ArrowRight } from "lucide-react";
-import { EventReaderModal } from "@/components/events/EventReaderModal";
+import { getEventsPageData, getStrapiMediaUrl } from "@/lib/strapi";
+import { formatDisplayDate } from "@/lib/newsHelper";
+import { EventsClient, EventItem } from "@/components/events/EventsClient";
 
-// Types
-
-interface EventItem {
-  id: string;
-  date: string;
-  month: string;
-  day: string;
-  year: string;
-  title: string;
-  description: string;
-  category: string;
-  image: string;
-  imageAlt: string;
-  time?: string;
-  venue?: string;
-  tag: "upcoming" | "past";
-}
-
-// Helpers
+export const metadata: Metadata = {
+  title: "School Events & Activities | Kids' Foundation",
+  description:
+    "Stay informed about upcoming and past school events, sports meets, cultural celebrations, academic exhibitions, and parent forums at Kids' Foundation, Imphal.",
+};
 
 function parseDateParts(dateStr: string) {
   const d = new Date(dateStr);
@@ -46,8 +28,6 @@ function parseDateParts(dateStr: string) {
     year: String(d.getFullYear()),
   };
 }
-
-// Build full event list (homepage data + dummy extras)
 
 const homepageEvents: EventItem[] = NEWS_ITEMS.filter(
   (n) => n.category === "events"
@@ -201,7 +181,7 @@ const dummyEvents: EventItem[] = [
   },
 ];
 
-const ALL_EVENTS: EventItem[] = [...homepageEvents, ...dummyEvents].sort(
+const DEFAULT_EVENTS: EventItem[] = [...homepageEvents, ...dummyEvents].sort(
   (a, b) => {
     if (a.tag === "upcoming" && b.tag !== "upcoming") return -1;
     if (a.tag !== "upcoming" && b.tag === "upcoming") return 1;
@@ -209,188 +189,81 @@ const ALL_EVENTS: EventItem[] = [...homepageEvents, ...dummyEvents].sort(
   }
 );
 
-const FILTER_OPTIONS = [
-  "All",
-  "Upcoming",
-  "Past",
-  "School Events",
-  "Academic",
-  "Sports",
-  "Cultural",
-  "Community",
-  "Ceremony",
-];
+export default async function EventsPage() {
+  const strapiData = await getEventsPageData();
 
+  const bannerTitle = strapiData?.bannerTitle || "Events";
+  const breadcrumb = strapiData?.breadcrumb || ["Events"];
+  const sectionLabel = strapiData?.sectionLabel || "ALL EVENTS";
+  const sectionHeading =
+    strapiData?.sectionHeading || "What's happening at Kids' Foundation";
+  const filterOptions = strapiData?.filterOptions || [
+    "All",
+    "Upcoming",
+    "Past",
+    "School Events",
+    "Academic",
+    "Sports",
+    "Cultural",
+    "Community",
+    "Ceremony",
+  ];
 
-// Event Card
-
-function EventCard({
-  event,
-  onReadEvent,
-}: {
-  event: EventItem;
-  onReadEvent: (event: EventItem) => void;
-}) {
-  return (
-    <div className="group bg-white rounded-2xl overflow-hidden shadow-[0_4px_16px_rgba(23,52,95,0.06)] border border-slate-100 hover:shadow-[0_12px_32px_rgba(23,52,95,0.12)] hover:-translate-y-1 transition-all duration-300 flex flex-col">
-      <div
-        onClick={() => onReadEvent(event)}
-        className="relative h-[220px] overflow-hidden flex-shrink-0 cursor-pointer"
-      >
-        <Image
-          src={event.image}
-          alt={event.imageAlt}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          style={{ objectFit: "cover", objectPosition: "center" }}
-          className="group-hover:scale-105 transition-transform duration-500"
-        />
-        <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm rounded-xl px-3 py-2 text-center shadow-sm min-w-[52px]">
-          <div className="text-[#F47C61] text-[10px] font-bold uppercase tracking-wider leading-none mb-0.5">
-            {event.month}
-          </div>
-          <div className="text-[#17345F] text-xl font-extrabold leading-none">
-            {event.day}
-          </div>
-        </div>
-        <div className="absolute top-4 right-4">
-          <span
-            className={`text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full ${
-              event.tag === "upcoming"
-                ? "bg-[#F47C61] text-white"
-                : "bg-slate-700/80 text-white"
-            }`}
-          >
-            {event.tag === "upcoming" ? "Upcoming" : "Past"}
-          </span>
-        </div>
-      </div>
-
-      <div className="p-5 sm:p-6 flex flex-col flex-1">
-        <div className="flex items-center gap-1.5 mb-3">
-          <Tag className="w-3 h-3 text-[#D97706]" />
-          <span className="text-[#D97706] text-xs font-semibold uppercase tracking-wide">
-            {event.category}
-          </span>
-        </div>
-
-        <h3
-          onClick={() => onReadEvent(event)}
-          className="text-base sm:text-lg font-bold text-[#17345F] leading-[1.4] mb-3 group-hover:text-[#F47C61] transition-colors duration-200 cursor-pointer"
-        >
-          {event.title}
-        </h3>
-
-        <p className="text-sm text-[#475569] leading-[1.75] mb-4 flex-1 line-clamp-3">
-          {event.description}
-        </p>
-
-        <div className="space-y-1.5 mb-5">
-          {event.time && (
-            <div className="flex items-center gap-2 text-xs text-[#64748b]">
-              <Clock className="w-3.5 h-3.5 flex-shrink-0" />
-              <span>{event.time}</span>
-            </div>
-          )}
-          {event.venue && (
-            <div className="flex items-center gap-2 text-xs text-[#64748b]">
-              <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-              <span>{event.venue}</span>
-            </div>
-          )}
-        </div>
-
-        <button
-          type="button"
-          onClick={() => onReadEvent(event)}
-          className="inline-flex items-center gap-1.5 text-[#17345F] font-semibold text-sm group-hover:text-[#F47C61] transition-colors duration-200 cursor-pointer self-start"
-          aria-label={`Read more about: ${event.title}`}
-        >
-          <span>Read Full Details</span>
-          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// Page
-
-export default function EventsPage() {
-  const [activeFilter, setActiveFilter] = useState("All");
-  const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
-
-  const filtered = ALL_EVENTS.filter((e) => {
-    if (activeFilter === "All") return true;
-    if (activeFilter === "Upcoming") return e.tag === "upcoming";
-    if (activeFilter === "Past") return e.tag === "past";
-    return e.category === activeFilter;
-  });
+  const events: EventItem[] =
+    strapiData?.events && strapiData.events.length > 0
+      ? strapiData.events
+          .map((ev, idx) => {
+            const fallback = DEFAULT_EVENTS[idx] || DEFAULT_EVENTS[0];
+            const rawDate = ev.date || fallback.date;
+            const { month, day, year } = parseDateParts(rawDate);
+            const rawId = typeof ev.id === "number" ? ev.id : idx;
+            const tag: "upcoming" | "past" = ev.tag || fallback.tag || "upcoming";
+            return {
+              id: ev.eventId || String(ev.id || `event-${idx}`),
+              rawId,
+              rawDate,
+              date: formatDisplayDate(rawDate) || rawDate,
+              month: ev.month || month,
+              day: ev.day || day,
+              year: ev.year || year,
+              title: ev.title || fallback.title,
+              description: ev.description || fallback.description,
+              category: ev.category || fallback.category,
+              image:
+                getStrapiMediaUrl(ev.image) ||
+                ev.imageUrl ||
+                fallback.image,
+              imageAlt: ev.imageAlt || fallback.imageAlt,
+              time: ev.time || fallback.time,
+              venue: ev.venue || fallback.venue,
+              tag,
+            };
+          })
+          .sort((a, b) => {
+            // 1. Upcoming events on top of all
+            const aIsUpcoming = a.tag === "upcoming" ? 1 : 0;
+            const bIsUpcoming = b.tag === "upcoming" ? 1 : 0;
+            if (bIsUpcoming !== aIsUpcoming) {
+              return bIsUpcoming - aIsUpcoming;
+            }
+            // 2. Latest upload on top
+            const idDiff = (b.rawId ?? 0) - (a.rawId ?? 0);
+            if (idDiff !== 0) return idDiff;
+            // 3. Fallback to event date
+            const aTime = new Date(a.rawDate).getTime() || 0;
+            const bTime = new Date(b.rawDate).getTime() || 0;
+            return bTime - aTime;
+          })
+      : DEFAULT_EVENTS;
 
   return (
-    <div className="relative min-h-screen flex flex-col overflow-x-hidden selection:bg-[#F47C61] selection:text-white">
-      <Header />
-
-      <main className="flex-1 flex flex-col">
-        <PageBanner title="Events" breadcrumb={["Events"]} />
-
-        {/* All Events Grid */}
-        <section className="py-12 sm:py-16 lg:py-20 bg-[#FAF7F2]">
-          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 lg:px-[100px]">
-            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
-              <div>
-                <span className="text-[#D97706] font-semibold text-xs sm:text-[13px] tracking-[0.25em] uppercase inline-block leading-normal mb-2.5">
-                  ALL EVENTS
-                </span>
-                <h2 className="text-2xl sm:text-3xl lg:text-[36px] font-bold text-[#17345F] leading-[1.25] tracking-tight">
-                  What&apos;s happening at Kids&apos; Foundation
-                </h2>
-              </div>
-            </div>
-
-            {/* Filter Pills */}
-            <div className="flex flex-wrap gap-2 mb-10">
-              {FILTER_OPTIONS.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveFilter(cat)}
-                  className={`text-xs sm:text-sm font-semibold px-4 py-2 rounded-full border transition-all duration-200 cursor-pointer ${
-                    activeFilter === cat
-                      ? "bg-[#17345F] text-white border-[#17345F]"
-                      : "bg-white text-[#475569] border-slate-200 hover:border-[#17345F] hover:text-[#17345F]"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-
-            {filtered.length === 0 ? (
-              <div className="text-center py-16 text-[#475569] text-sm">
-                No events found for this filter.
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-                {filtered.map((event) => (
-                  <EventCard
-                    key={event.id}
-                    event={event}
-                    onReadEvent={(ev) => setSelectedEvent(ev)}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        </section>
-
-        <Footer />
-      </main>
-
-      {/* In-page Full Event Reader Modal (Never redirects away) */}
-      <EventReaderModal
-        event={selectedEvent}
-        onClose={() => setSelectedEvent(null)}
-      />
-    </div>
+    <EventsClient
+      bannerTitle={bannerTitle}
+      breadcrumb={breadcrumb}
+      sectionLabel={sectionLabel}
+      sectionHeading={sectionHeading}
+      filterOptions={filterOptions}
+      events={events}
+    />
   );
 }

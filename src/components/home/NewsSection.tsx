@@ -8,6 +8,10 @@ import { IMAGES } from "@/data/images";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { NewsCard } from "@/components/ui/NewsCard";
 import { cn } from "@/lib/utils";
+import { SectionHeaderData, NewsArticleData, NewsPageData, EventsPageData } from "@/types/strapi";
+import { getStrapiMediaUrl } from "@/lib/strapi";
+import { formatAndSortNewsArticles, formatDisplayDate } from "@/lib/newsHelper";
+import { NewsItem } from "@/types";
 
 function CustomScrollbar({ scrollContainerRef }: { scrollContainerRef: React.RefObject<HTMLDivElement | null> }) {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -142,20 +146,93 @@ function CustomScrollbar({ scrollContainerRef }: { scrollContainerRef: React.Ref
   );
 }
 
-export function NewsSection() {
+interface NewsSectionProps {
+  headerData?: SectionHeaderData | null;
+  newsPageData?: NewsPageData | null;
+  eventsPageData?: EventsPageData | null;
+  articlesData?: NewsArticleData[] | null;
+}
+
+export function NewsSection({
+  headerData,
+  newsPageData,
+  eventsPageData,
+  articlesData,
+}: NewsSectionProps) {
   const [activeTab, setActiveTab] = useState<"events" | "news">("events");
   const newsScrollRef = useRef<HTMLDivElement>(null);
 
-  const filteredItems = useMemo(() => {
-    const items = NEWS_ITEMS.filter((item) => item.category === activeTab);
-    if (activeTab === "events") {
-      // Sort newest first (by date string), show only the latest 3
-      return [...items].sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-      ).slice(0, 3);
+  const headerLabel = headerData?.label || NEWS_HEADER.label;
+  const headerHeading = headerData?.heading || NEWS_HEADER.heading;
+  const headerDescription = headerData?.description || NEWS_HEADER.description;
+
+  // 1. Dynamic Events: Latest 4 uploads from eventsPageData (or fallback)
+  const eventItems = useMemo<NewsItem[]>(() => {
+    if (eventsPageData?.events && eventsPageData.events.length > 0) {
+      // Upcoming events first, latest upload (newest id first) on top of all
+      const sorted = [...eventsPageData.events].sort((a, b) => {
+        const aIsUpcoming = a.tag === "upcoming" ? 1 : 0;
+        const bIsUpcoming = b.tag === "upcoming" ? 1 : 0;
+        if (bIsUpcoming !== aIsUpcoming) {
+          return bIsUpcoming - aIsUpcoming;
+        }
+        const idDiff = (b.id ?? 0) - (a.id ?? 0);
+        if (idDiff !== 0) return idDiff;
+        const aTime = new Date(a.date).getTime() || 0;
+        const bTime = new Date(b.date).getTime() || 0;
+        return bTime - aTime;
+      });
+      return sorted.slice(0, 4).map((ev, idx) => ({
+        id: ev.eventId || `event-${ev.id || idx}`,
+        date: formatDisplayDate(ev.date) || ev.date,
+        title: ev.title,
+        description: ev.description || "",
+        category: "events",
+        image: ev.imageUrl || getStrapiMediaUrl(ev.image) || "/images/banner_images/banner.jpg",
+        imageAlt: ev.title,
+        linkHref: "/events",
+      }));
     }
-    return items;
-  }, [activeTab]);
+    return NEWS_ITEMS.filter((i) => i.category === "events").slice(0, 4);
+  }, [eventsPageData]);
+
+  // 2. Dynamic News: Exact same data as /news page, sorted latest-on-top, max 10
+  const latest10News = useMemo(() => {
+    if (newsPageData?.articles && newsPageData.articles.length > 0) {
+      const thresholdDays = newsPageData.latestDaysThreshold || 14;
+      const sorted = formatAndSortNewsArticles(newsPageData.articles, thresholdDays);
+
+      return sorted.slice(0, 10).map((a) => ({
+        id: a.id,
+        date: a.date,
+        title: a.title,
+        isLatest: a.isLatest,
+        category: a.category,
+        linkHref: "/news",
+      }));
+    }
+
+    // Fallback to articlesData or NEWS_ITEMS
+    if (articlesData && articlesData.length > 0) {
+      return articlesData.slice(0, 10).map((a) => ({
+        id: a.slug || `article-${a.id}`,
+        date: formatDisplayDate(a.publishedDate ? a.publishedDate.split("T")[0] : ""),
+        title: a.title,
+        isLatest: false,
+        category: a.category || "News",
+        linkHref: "/news",
+      }));
+    }
+
+    return NEWS_ITEMS.filter((i) => i.category === "news").slice(0, 10).map((i) => ({
+      id: i.id,
+      date: i.date,
+      title: i.title,
+      isLatest: false,
+      category: "News",
+      linkHref: "/news",
+    }));
+  }, [newsPageData, articlesData]);
 
   return (
     <section id="news" className="py-12 sm:py-16 lg:py-20 bg-[#FAF7F2] relative overflow-hidden">
@@ -172,9 +249,9 @@ export function NewsSection() {
       <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 lg:px-[100px]">
         {/* Header */}
         <SectionHeading
-          label={NEWS_HEADER.label}
-          heading={NEWS_HEADER.heading}
-          description={NEWS_HEADER.description}
+          label={headerLabel}
+          heading={headerHeading}
+          description={headerDescription}
           align="center"
           className="mb-6 sm:mb-8"
         />
@@ -215,13 +292,13 @@ export function NewsSection() {
 
         {/* Content: Cards for Events, List for News & Updates */}
         {activeTab === "events" ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-            {filteredItems.map((item) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+            {eventItems.map((item) => (
               <NewsCard key={item.id} item={item} />
             ))}
           </div>
         ) : (
-          <div className="relative max-w-[900px] mx-auto">
+          <div className="relative max-w-[950px] mx-auto">
             {/* Outer container with flat blue background and clipping */}
             <div className="bg-[#E8EEF6] rounded-3xl p-3 sm:p-5 overflow-hidden relative">
               {/* Custom scrollbar */}
@@ -230,21 +307,28 @@ export function NewsSection() {
               {/* Scrollable news list — native scrollbar hidden */}
               <div
                 ref={newsScrollRef}
-                className="news-scroll-container flex flex-col gap-2.5 sm:gap-3.5 max-h-[340px] overflow-y-auto pr-6 sm:pr-9"
+                className="news-scroll-container flex flex-col gap-2.5 sm:gap-3.5 max-h-[380px] overflow-y-auto pr-6 sm:pr-9"
               >
-                {filteredItems.map((item) => (
+                {latest10News.map((item) => (
                   <Link
                     key={item.id}
                     href={item.linkHref}
-                    className="group flex flex-col sm:flex-row sm:items-center rounded-2xl px-4 sm:px-7 py-3 sm:py-5 shadow-[0_2px_12px_rgba(23,52,95,0.04)] hover:shadow-[0_6px_20px_rgba(23,52,95,0.08)] transition-all duration-300 hover:-translate-y-0.5 flex-shrink-0 bg-white gap-1.5 sm:gap-0"
+                    className="group flex flex-col sm:flex-row sm:items-center rounded-2xl px-4 sm:px-7 py-3 sm:py-5 shadow-[0_2px_12px_rgba(23,52,95,0.04)] hover:shadow-[0_6px_20px_rgba(23,52,95,0.08)] transition-all duration-300 hover:-translate-y-0.5 flex-shrink-0 bg-white gap-2 sm:gap-0"
                   >
-                    {/* Date */}
-                    <span className="text-[11px] sm:text-xs font-semibold text-[#D97706] tracking-wide whitespace-nowrap sm:min-w-[130px]">
-                      {item.date}
-                    </span>
+                    {/* Date + Optional Latest badge */}
+                    <div className="flex items-center gap-2.5 flex-wrap sm:min-w-[170px] shrink-0">
+                      <span className="text-[11px] sm:text-xs font-semibold text-[#D97706] tracking-wide whitespace-nowrap">
+                        {item.date}
+                      </span>
+                      {item.isLatest && (
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-rose-600 bg-rose-50 border border-rose-200/80 px-1.5 py-0.5 rounded-md">
+                          • Latest
+                        </span>
+                      )}
+                    </div>
 
                     {/* Title */}
-                    <h3 className="flex-1 text-sm sm:text-base font-bold text-[#17345F] leading-snug group-hover:text-[#F47C61] transition-colors pl-0 sm:pl-6">
+                    <h3 className="flex-1 text-sm sm:text-base font-bold text-[#17345F] leading-snug group-hover:text-[#F47C61] transition-colors pl-0 sm:pl-4">
                       {item.title}
                     </h3>
 
@@ -270,7 +354,7 @@ export function NewsSection() {
             <span>
               {activeTab === "events"
                 ? "View all events →"
-                : "View all news →"}
+                : "View all news & notices →"}
             </span>
           </Link>
         </div>
@@ -278,4 +362,3 @@ export function NewsSection() {
     </section>
   );
 }
-
