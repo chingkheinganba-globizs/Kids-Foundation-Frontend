@@ -75,7 +75,9 @@ export default async function Home() {
       />
 
       {/* 9. Floating Enquire Now Right-Side Tab */}
-      <FloatingEnquireTab />
+      <FloatingEnquireTab
+        stages={learningPageData?.stages?.map((s) => s.title)}
+      />
     </div>
   );
 }

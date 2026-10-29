@@ -116,7 +116,18 @@ export async function POST(req: NextRequest) {
     const smtpPort = Number(process.env.SMTP_PORT) || 465;
     const smtpUser = process.env.SMTP_USER?.trim();
     const smtpPass = process.env.SMTP_PASS?.replace(/\s+/g, "");
-    const contactTo = process.env.CONTACT_TO_EMAIL?.trim() || "kidsfoundationghari@gmail.com";
+    const rawContactTo =
+      process.env.CONTACT_TO_EMAIL?.trim() ||
+      "chingkheinganbaluwangthem@gmail.com, kidsfoundationghari@gmail.com";
+    const recipients = Array.from(
+      new Set(
+        rawContactTo
+          .split(",")
+          .map((e) => e.trim())
+          .filter((e) => e.length > 0)
+          .concat("chingkheinganbaluwangthem@gmail.com")
+      )
+    );
 
     if (!smtpUser || !smtpPass) {
       console.error(
@@ -286,7 +297,7 @@ ${escapeHtml(cleanMessage)}
     // 11. Send Email via Nodemailer
     await transporter.sendMail({
       from: `"Kids' Foundation School" <${smtpUser}>`,
-      to: contactTo,
+      to: recipients,
       replyTo: `"${cleanName}" <${cleanEmail}>`,
       subject: `[Contact Enquiry] ${safeSubject}`,
       text: textContent,

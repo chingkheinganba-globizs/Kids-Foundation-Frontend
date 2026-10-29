@@ -161,58 +161,67 @@ export function HeroSection({ data }: HeroSectionProps) {
         </div>
       </div>
 
-      {/* Slider Navigation + Scroll Indicator */}
-      <div className="relative z-10 w-full flex flex-col items-center justify-center pt-6 pb-2 gap-6">
-        {/* Modern Dots + Arrows */}
-        <div className="flex items-center gap-5">
-          {/* Previous Arrow */}
-          <button
-            onClick={prevSlide}
-            aria-label="Previous slide"
-            className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 border border-white/25 text-white flex items-center justify-center transition-all duration-200 backdrop-blur-sm"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
+      {/* Slider Navigation (Right Bottom) parallel to Scroll to Discover Indicator (Centered) */}
+      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 lg:px-[100px] pt-4 pb-2">
+        <div className="flex items-end justify-between sm:grid sm:grid-cols-3 sm:items-end">
+          {/* Left spacer to keep center indicator perfectly centered on tablet/desktop */}
+          <div className="hidden sm:block" />
 
-          {/* Dots */}
-          <div className="flex items-center gap-2.5">
-            {slides.map((_, index) => (
+          {/* Center: Scroll to Discover Indicator */}
+          <div className="flex justify-center">
+            <Link
+              href="#about"
+              className="flex flex-col items-center text-white/70 hover:text-white transition-colors group cursor-pointer"
+            >
+              <span className="text-[10px] font-semibold tracking-[0.25em] uppercase mb-1.5 whitespace-nowrap">
+                {heroScrollIndicator}
+              </span>
+              <div className="w-5 h-8 rounded-full border-2 border-white/40 group-hover:border-white/80 flex items-start justify-center p-1.5 transition-colors">
+                <div className="w-1.5 h-2 bg-white/80 rounded-full animate-scroll-bounce" />
+              </div>
+            </Link>
+          </div>
+
+          {/* Right: Modern Dots + Arrows (Parallel to Scroll to Discover) */}
+          <div className="flex justify-end items-center pb-1">
+            <div className="flex items-center gap-3.5 sm:gap-5">
+              {/* Previous Arrow */}
               <button
-                key={index}
-                onClick={() => goToSlide(index)}
-                aria-label={`Go to slide ${index + 1}`}
-                className={cn(
-                  "h-2 rounded-full transition-all duration-300",
-                  index === current
-                    ? "w-7 bg-[#FBBF24]"
-                    : "w-2 bg-white/50 hover:bg-white/80"
-                )}
-              />
-            ))}
-          </div>
+                onClick={prevSlide}
+                aria-label="Previous slide"
+                className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 hover:bg-white/25 border border-white/30 text-white flex items-center justify-center transition-all duration-200 backdrop-blur-sm cursor-pointer active:scale-95 shadow-sm"
+              >
+                <ChevronLeft className="w-5 h-5 sm:w-5.5 sm:h-5.5" />
+              </button>
 
-          {/* Next Arrow */}
-          <button
-            onClick={nextSlide}
-            aria-label="Next slide"
-            className="w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 border border-white/25 text-white flex items-center justify-center transition-all duration-200 backdrop-blur-sm"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
+              {/* Dots */}
+              <div className="flex items-center gap-2.5">
+                {slides.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    aria-label={`Go to slide ${index + 1}`}
+                    className={cn(
+                      "h-2 sm:h-2.5 rounded-full transition-all duration-300 cursor-pointer",
+                      index === current
+                        ? "w-7 sm:w-8 bg-[#FBBF24]"
+                        : "w-2 sm:w-2.5 bg-white/50 hover:bg-white/80"
+                    )}
+                  />
+                ))}
+              </div>
+
+              {/* Next Arrow */}
+              <button
+                onClick={nextSlide}
+                aria-label="Next slide"
+                className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/10 hover:bg-white/25 border border-white/30 text-white flex items-center justify-center transition-all duration-200 backdrop-blur-sm cursor-pointer active:scale-95 shadow-sm"
+              >
+                <ChevronRight className="w-5 h-5 sm:w-5.5 sm:h-5.5" />
+              </button>
+            </div>
+          </div>
         </div>
-
-        {/* Scroll to Discover Indicator */}
-        <Link
-          href="#about"
-          className="flex flex-col items-center text-white/70 hover:text-white transition-colors group cursor-pointer"
-        >
-          <span className="text-[10px] font-semibold tracking-[0.25em] uppercase mb-1.5">
-            {heroScrollIndicator}
-          </span>
-          <div className="w-5 h-8 rounded-full border-2 border-white/40 group-hover:border-white/80 flex items-start justify-center p-1.5 transition-colors">
-            <div className="w-1.5 h-2 bg-white/80 rounded-full animate-scroll-bounce" />
-          </div>
-        </Link>
       </div>
     </section>
   );
